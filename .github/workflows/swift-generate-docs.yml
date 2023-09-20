@@ -22,6 +22,11 @@ on:
         required: true
         type: string
         default: ${{ github.event.repository.name }}
+      pages-branch:
+        description: The name of the branch to use for the documentation.
+        required: true
+        type: string
+        default: gh-pages
 
 jobs:
   basic-context:
@@ -33,8 +38,8 @@ jobs:
       build-container: ${{ steps.builder.outputs.container }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}
       base-url: 'https://${{ inputs.organisation }}.github.io'
-      base-path: ${{ github.event.repository.name }}
-      version-path: ${{ github.event.repository.name }}/${{ github.ref_name }}
+      base-path: ${{ inputs.repository }}
+      version-path: ${{ inputs.repository }}/${{ github.ref_name }}
     steps:
       - uses: joutvhu/get-release@v1
         id: latest-release
@@ -135,10 +140,13 @@ jobs:
       - spm-context
       - generate-docs
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ inputs.organisation }}/${{ inputs.repository }}/${{ inputs.pages-branch }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: gh-pages
+          ref: ${{ inputs.pages-branch }}
           path: repository
       - uses: actions/download-artifact@v3
         with:
@@ -217,8 +225,7 @@ jobs:
         working-directory: repository
         env:
           REDIRECT_URL: ${{ needs.basic-context.outputs.base-url }}/${{ needs.basic-context.outputs.base-path }}/latest
-            'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/latest'
-          REPO_NAME: ${{ github.event.repository.name }}
+          REPO_NAME: ${{ inputs.repository }}
         run: |
           cat > 'index.html' <<EOF
           <!DOCTYPE html>

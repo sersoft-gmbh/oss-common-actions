@@ -1,0 +1,83 @@
+name: Swift Runner Setup Versions
+description: Determine the necessary OS and Xcode versions for a given Swift version.
+
+inputs:
+  os:
+    description: The os to use. Must be either 'macOS' or 'ubuntu'.
+    required: true
+  swift-version:
+    description: The Swift version to determine the values for.
+    required: true
+outputs:
+  runner-os:
+    description: The OS to use for the runner.
+    value: ${{ steps.determine-versions.outputs.runner-os }}
+  container:
+    description: The container to use for running. Not set if no container should be used.
+    value: ${{ steps.determine-versions.outputs.container }}
+  xcode-version:
+    description: The Xcode version to use for the runner. Not set if ubuntu is used.
+    value: ${{ steps.determine-versions.outputs.xcode-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Determine versions
+      id: determine-versions
+      shell: bash
+      env:
+        INPUT_OS: ${{ inputs.os }}
+        SWIFT_VERSION: ${{ inputs.swift-version }}
+      run: |
+        case "${INPUT_OS}" in
+          'ubuntu')
+            echo 'runner-os=ubuntu-latest' >> "${GITHUB_OUTPUT}"
+            echo "container=swift:${SWIFT_VERSION}" >> "${GITHUB_OUTPUT}"
+          ;;
+          'macOS')
+            MACOS_VERSION=''
+            XCODE_VERSION=''
+            case "${SWIFT_VERSION}" in
+              '5.2'*)
+                MACOS_VERSION='11'
+                XCODE_VERSION='11.7'
+              ;;
+              '5.3'*)
+                MACOS_VERSION='11'
+                XCODE_VERSION='12.4'
+              ;;
+              '5.4'*)
+                MACOS_VERSION='11'
+                XCODE_VERSION='12.5.1'
+              ;;
+              '5.5'*)
+                MACOS_VERSION='12'
+                XCODE_VERSION='13.2.1'
+              ;;
+              '5.6'*)
+                MACOS_VERSION='12'
+                XCODE_VERSION='13.4.1'
+              ;;
+              '5.7'*)
+                MACOS_VERSION='13'
+                XCODE_VERSION='14.2'
+              ;;
+              '5.8'*)
+                MACOS_VERSION='13'
+                XCODE_VERSION='14.3.1'
+              ;;
+              '5.9'*)
+                MACOS_VERSION='13'
+                XCODE_VERSION='15.0-beta' # currently only the beta is available on macOS-13
+              ;;
+              *)
+                echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1
+              ;;
+            esac
+            echo "runner-os=macos-${MACOS_VERSION}" >> "${GITHUB_OUTPUT}"
+            echo "xcode-version=${XCODE_VERSION}" >> "${GITHUB_OUTPUT}"
+          ;;
+          *)
+            echo "::error title=Unknown OS!::Unknown os: ${INPUT_OS}" && exit 1
+          ;;
+        esac

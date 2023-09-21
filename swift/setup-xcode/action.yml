@@ -1,0 +1,23 @@
+name: Swift Xcode Setup
+description: Sets up Xcode according to the given Swift version.
+
+inputs:
+  swift-version:
+    description: The Swift version to setup Xcode for
+    required: true
+outputs:
+  xcode-version:
+    description: The Xcode version that was set up.
+    value: ${{ steps.determine-version.outputs.xcode-version }}
+
+runs:
+  using: composite
+  steps:
+    - uses: sersoft-gmbh/oss-common-actions/swift/runner-setup-versions@main
+      id: determine-version
+      with:
+        os: macOS
+        swift-version: ${{ inputs.swift-version }}
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ steps.determine-version.outputs.xcode-version }}

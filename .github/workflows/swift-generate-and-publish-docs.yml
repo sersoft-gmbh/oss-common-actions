@@ -28,8 +28,13 @@ on:
         type: string
         default: gh-pages
 
+permissions:
+  contents: write
+
 jobs:
   basic-context:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     outputs:
       version-name: ${{ github.ref_name }}
@@ -67,6 +72,8 @@ jobs:
           swift-version: ${{ inputs.swift-version }}
 
   spm-context:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     container: swift:${{ inputs.swift-version }}
     outputs:
@@ -87,6 +94,8 @@ jobs:
     needs:
       - basic-context
       - spm-context
+    permissions:
+      contents: read
     runs-on: ${{ needs.basic-context.outputs.build-os }}
     container: ${{ needs.basic-context.outputs.build-container }}
     strategy:
@@ -140,6 +149,8 @@ jobs:
       - basic-context
       - spm-context
       - generate-docs
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ inputs.organisation }}/${{ inputs.repository }}/${{ inputs.pages-branch }}
@@ -270,6 +281,7 @@ jobs:
     needs:
       - generate-docs
       - publish-docs
+    permissions: {}
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:

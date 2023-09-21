@@ -35,9 +35,13 @@ on:
         description: The token to use for uploading to codecov.
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   determine-versions:
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       build-os: ${{ steps.builder.outputs.runner-os }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}

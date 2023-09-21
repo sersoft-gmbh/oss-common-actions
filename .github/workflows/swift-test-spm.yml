@@ -55,6 +55,10 @@ jobs:
     runs-on: ${{ needs.versions.outputs.build-os }}
     container: ${{ needs.versions.outputs.build-container }}
     steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: ${{ runner.os == 'macOS' }}
+        with:
+          xcode-version: ${{ needs.versions.outputs.xcode-version }}
       - uses: sersoft-gmbh/oss-common-actions/swift/test/spm@main
         with:
           use-sudo: ${{ inputs.use-sudo }}

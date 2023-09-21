@@ -115,7 +115,7 @@ runs:
           ;;
           *) exit 1;; # Handled in validation above
         esac
-        echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}
+        echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}"
     - name: Determine Destination
       id: determine-destination
       shell: bash

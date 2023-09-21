@@ -127,7 +127,7 @@ jobs:
           enable-inherited-docs: true
           enable-index-building: false
           transform-for-static-hosting: true
-          hosting-base-path: ${{ needs.basic-context.outputs.base-path}}
+          hosting-base-path: ${{ needs.basic-context.outputs.version-path }}
           output: ${{ matrix.target }}-docs
       - name: Package docs
         env:
@@ -190,7 +190,7 @@ jobs:
         env:
           TARGET_DOCS_DIR: ${{ needs.basic-context.outputs.version-name }}/documentation
           INDEX_FILE: ${{ needs.basic-context.outputs.version-name }}/index.html
-          BASE_URL: ${{ needs.basic-context.outputs.base-url }}/${{ needs.basic-context.outputs.base-path }}/documentation
+          BASE_URL: ${{ needs.basic-context.outputs.base-url }}/${{ needs.basic-context.outputs.version-path }}/documentation
           REPO_NAME: ${{ inputs.repository }}
         run: |
           target_count=0

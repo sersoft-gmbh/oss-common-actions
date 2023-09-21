@@ -13,7 +13,47 @@ updates:
       - ffried
   # Use wildcards as soon as available: https://github.com/dependabot/dependabot-core/issues/5137
   - package-ecosystem: "github-actions"
+    directory: "/swift/latest-version"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Europe/Berlin"
+    assignees:
+      - ffried
+    reviewers:
+      - ffried
+  - package-ecosystem: "github-actions"
     directory: "/swift/runner-setup-versions"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Europe/Berlin"
+    assignees:
+      - ffried
+    reviewers:
+      - ffried
+  - package-ecosystem: "github-actions"
+    directory: "/swift/test/spm"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Europe/Berlin"
+    assignees:
+      - ffried
+    reviewers:
+      - ffried
+  - package-ecosystem: "github-actions"
+    directory: "/swift/test/xcode"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Europe/Berlin"
+    assignees:
+      - ffried
+    reviewers:
+      - ffried
+  - package-ecosystem: "github-actions"
+    directory: "/swift/xcode-destination-specifier"
     schedule:
       interval: "daily"
       time: "07:00"

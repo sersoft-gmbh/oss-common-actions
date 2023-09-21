@@ -1,0 +1,52 @@
+name: SPM Test Swift Package
+description: Tests a Swift package using SPM.
+
+inputs:
+  use-sudo:
+    description: Whether to use sudo for running the tests.
+    required: false
+    default: 'false'
+  codecov-token:
+    description: The Codecov token to use for uploading the coverage report.
+    required: false
+  fail-if-codecov-fails:
+    description: Whether to fail the action if Codecov fails.
+    required: false
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - uses: sersoft-gmbh/os-version-action@v3
+      id: os-version
+    - uses: sersoft-gmbh/swift-version-action@v3
+      id: swift-version
+    - uses: actions/checkout@v4
+    - uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-
+    - name: Build & Test
+      shell: bash
+      env:
+        USE_SUDO: ${{ inputs.use-sudo || 'false' }}
+        RUNNER_DEBUG: ${{ runner.debug }}
+      run: |
+        SUDO_PREFIX=''
+        if [ "${USE_SUDO}" == 'true' ]; then
+          SUDO_PREFIX='sudo '
+        fi
+        if [ "${ACTIONS_STEP_DEBUG}" == 'true' ] || [ "${RUNNER_DEBUG}" == '1' ]; then
+          "${SUDO_PREFIX}"swift test -v --parallel --enable-code-coverage
+        else
+          "${SUDO_PREFIX}"swift test --parallel --enable-code-coverage
+        fi
+    - uses: sersoft-gmbh/swift-coverage-action@v4
+      id: coverage-files
+    - uses: codecov/codecov-action@v3
+      with:
+        token: ${{ inputs.codecov-token }}
+        files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
+        fail_ci_if_error: ${{ inputs.fail-if-codecov-fails == 'true' }}

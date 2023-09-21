@@ -1,5 +1,5 @@
 name: Swift Runner Setup Versions
-description: Determine the necessary OS and Xcode versions for a given Swift version.
+description: Determines the necessary OS and Xcode versions for a given Swift version.
 
 inputs:
   os:

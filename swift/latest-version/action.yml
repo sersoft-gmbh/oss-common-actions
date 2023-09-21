@@ -1,0 +1,110 @@
+name: Latest Swift Version
+description: Determines the latest Swift version.
+
+inputs:
+  max-supported:
+    description: The maximum supported Swift version.
+    required: true
+  offset:
+    description: The offset (backwards) from the latest Swift version. E.g. 1 will return the second latest version. The minimum resulting Swift version is 5.2.
+    required: false
+    default: '0'
+outputs:
+  version:
+    description: The latest Swift version with the given offset applied.
+    value: ${{ steps.determine-version.outputs.swift-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Apply Offset
+      if: ${{ inputs.offset != '0' && inputs.offset != '' }}
+      id: apply-offset
+      shell: bash
+      env:
+        BASE_VERSION: ${{ inputs.max-supported }}
+        OFFSET: ${{ inputs.offset }}
+      run: |
+        SWIFT_VERSION=''
+        case "${BASE_VERSION}" in
+        '5.9')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.8';;
+            '2') SWIFT_VERSION='5.7';;
+            '3') SWIFT_VERSION='5.6';;
+            '4') SWIFT_VERSION='5.5';;
+            '5') SWIFT_VERSION='5.4';;
+              *) ;;
+          esac
+        ;;
+        '5.8')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.7';;
+            '2') SWIFT_VERSION='5.6';;
+            '3') SWIFT_VERSION='5.5';;
+            '4') SWIFT_VERSION='5.4';;
+            '5') SWIFT_VERSION='5.3';;
+              *) ;;
+          esac
+        ;;
+        '5.7')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.6';;
+            '2') SWIFT_VERSION='5.5';;
+            '3') SWIFT_VERSION='5.4';;
+            '4') SWIFT_VERSION='5.3';;
+            '5') SWIFT_VERSION='5.2';;
+              *) ;;
+          esac
+        ;;
+        '5.6')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.5';;
+            '2') SWIFT_VERSION='5.4';;
+            '3') SWIFT_VERSION='5.3';;
+            '4') SWIFT_VERSION='5.2';;
+              *) ;;
+          esac
+        ;;
+        '5.5')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.4';;
+            '2') SWIFT_VERSION='5.3';;
+            '3') SWIFT_VERSION='5.2';;
+              *) ;;
+          esac
+        ;;
+        '5.4')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.3';;
+            '2') SWIFT_VERSION='5.2';;
+              *) ;;
+          esac
+        ;;
+        '5.3')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.2';;
+              *) ;;
+          esac
+        ;;
+        *) ;;
+        esac
+        if [ -z "${SWIFT_VERSION}" ]; then
+          echo "::error title=Invalid Offset!::Invalid offset ${OFFSET} for Swift version ${BASE_VERSION}"
+          exit 1
+        else
+          echo "adjusted-version=${SWIFT_VERSION}" >> "${GITHUB_OUTPUT}"
+        fi
+    - name: Determine Version
+      id: determine-version
+      shell: bash
+      env:
+        BASE_VERSION: ${{ inputs.max-supported }}
+        OFFSET: ${{ inputs.offset || '0' }}
+        ADJUSTED_VERSION: ${{ steps.apply-offset.outputs.adjusted-version }}
+      run: |
+        if [ "${OFFSET}" == '0' ]; then
+          echo "swift-version=${BASE_VERSION}" >> "${GITHUB_OUTPUT}"
+        else
+          echo "swift-version=${ADJUSTED_VERSION}" >> "${GITHUB_OUTPUT}"
+        fi

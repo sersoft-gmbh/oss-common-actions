@@ -1,4 +1,4 @@
-name: Generate Swift Package Documentation
+name: Generate and Publish Swift Package Documentation
 
 on:
   workflow_call:

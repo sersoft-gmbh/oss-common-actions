@@ -1,0 +1,131 @@
+name: Swift Xcode Destination Specifier
+description: Determines the Xcode destination specifier for a given Xcode version and platform.
+
+inputs:
+  platform:
+    description: The platform to use. Must be either 'macOS', 'iOS', 'iPadOS', 'tvOS', 'watchOS' or 'visionOS' (requires xcode-version 15 or greater).
+    required: true
+  xcode-version:
+    description: The Xcode version in use.
+    required: true
+  platform-version:
+    description: The platform version to use. Only used for iOS, iPadOS, tvOS, watchOS and visionOS. No checks are made whether a simulator for the given version exists.
+    required: false
+    default: 'latest'
+outputs:
+  destination:
+    description: The Xcode destination specifier.
+    value: ${{ steps.determine-destination.outputs.xcode-destination }}
+
+runs:
+  using: composite
+  steps:
+    - name: Validate input
+      shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
+        XCODE_VERSION: ${{ inputs.xcode-version }}
+      run: |
+        case "${XCODE_VERSION}" in
+          '11'*) ;;
+          '12'*) ;;
+          '13'*) ;;
+          '14'*) ;;
+          '15'*) ;;
+          *) echo "::error title=Unsupported Xcode Version!::Unsupported Xcode version: ${XCODE_VERSION}" && exit 1;;
+        esac
+        case "${PLATFORM}" in
+          'macOS') ;;
+          'iOS') ;;
+          'iPadOS') ;;
+          'tvOS') ;;
+          'watchOS') ;;
+          'visionOS')
+            case "${XCODE_VERSION}" in
+              '15'*) ;;
+              *) echo "::error title=Unsupported Platform!::${PLATFORM} is not supported on Xcode ${XCODE_VERSION}" && exit 1;;
+            esac
+          ;;
+          *) echo "::error title=Unsupported Platform!::Unsupported platform: ${PLATFORM}" && exit 1;;
+        esac
+    - name: Determine macOS Destination
+      if: ${{ inputs.platform == 'macOS' }}
+      id: macos-destination
+      shell: bash
+      run: echo "destination=platform=macOS" >> "${GITHUB_OUTPUT}"
+    - name: Determine Simulator Destination
+      if: ${{ inputs.platform != 'macOS' }}
+      id: simulator-destination
+      shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
+        XCODE_VERSION: ${{ inputs.xcode-version }}
+        PLATFORM_VERSION: ${{ inputs.platform-version || 'latest' }}
+      run: |
+        SIMULATOR_OS="${PLATFORM}"
+        if [ "${PLATFORM}" == 'iPadOS' ]; then
+          SIMULATOR_OS='iOS'
+        fi
+        DEVICE_NAME=''
+        case "${XCODE_VERSION}" in
+          '11'*)
+            case "${PLATFORM}" in
+              'iOS')     DEVICE_NAME='iPhone 11 Pro';;
+              'iPadOS')  DEVICE_NAME='iPad Pro (11-inch) (2nd generation)';;
+              'tvOS')    DEVICE_NAME='Apple TV 4K (2nd generation)';;
+              'watchOS') DEVICE_NAME='Apple Watch Series 5 - 44mm';;
+              *) exit 1;; # Handled in validation above
+            esac
+          ;;
+          '12'*)
+            case "${PLATFORM}" in
+              'iOS')     DEVICE_NAME='iPhone 12 Pro';;
+              'iPadOS')  DEVICE_NAME='iPad Pro (11-inch) (3rd generation)';;
+              'tvOS')    DEVICE_NAME='Apple TV 4K (2nd generation)';;
+              'watchOS') DEVICE_NAME='Apple Watch Series 6 - 44mm';;
+              *) exit 1;; # Handled in validation above
+            esac
+          ;;
+          '13'*)
+            case "${PLATFORM}" in
+              'iOS')     DEVICE_NAME='iPhone 13 Pro';;
+              'iPadOS')  DEVICE_NAME='iPad Pro (11-inch) (3rd generation)';;
+              'tvOS')    DEVICE_NAME='Apple TV 4K (2nd generation)';;
+              'watchOS') DEVICE_NAME='Apple Watch Series 7 - 44mm';;
+              *) exit 1;; # Handled in validation above
+            esac
+          ;;
+          '14'*)
+            case "${PLATFORM}" in
+              'iOS')     DEVICE_NAME='iPhone 14 Pro';;
+              'iPadOS')  DEVICE_NAME='iPad Pro (11-inch) (4th generation)';;
+              'tvOS')    DEVICE_NAME='Apple TV 4K (3rd generation)';;
+              'watchOS') DEVICE_NAME='Apple Watch Ultra (49mm)';;
+              *) exit 1;; # Handled in validation above
+            esac
+          ;;
+          '15'*)
+            case "${PLATFORM}" in
+              'iOS')     DEVICE_NAME='iPhone 15 Pro';;
+              'iPadOS')  DEVICE_NAME='iPad Pro (11-inch) (4th generation)';;
+              'tvOS')    DEVICE_NAME='Apple TV 4K (3rd generation)';;
+              'watchOS') DEVICE_NAME='Apple Watch Ultra 2 (49mm)';;
+              *) exit 1;; # Handled in validation above
+            esac
+          ;;
+          *) exit 1;; # Handled in validation above
+        esac
+        echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}
+    - name: Determine Destination
+      id: determine-destination
+      shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
+        MACOS_DESTINATION: ${{ steps.macos-destination.outputs.destination }}
+        SIMULATOR_DESTINATION: ${{ steps.simulator-destination.outputs.destination }}
+      run: |
+        if [ "${PLATFORM}" == 'macOS' ]; then
+          echo "xcode-destination=${MACOS_DESTINATION}" >> "${GITHUB_OUTPUT}"
+        else
+          echo "xcode-destination=${SIMULATOR_DESTINATION}" >> "${GITHUB_OUTPUT}"
+        fi

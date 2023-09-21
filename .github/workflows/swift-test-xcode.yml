@@ -36,7 +36,7 @@ on:
         required: false
 
 jobs:
-  versions:
+  determine-versions:
     runs-on: ubuntu-latest
     outputs:
       build-os: ${{ steps.builder.outputs.runner-os }}
@@ -53,13 +53,13 @@ jobs:
           os: macOS
           swift-version: ${{ steps.swift-version.outputs.version }}
 
-  test-spm:
-    needs: versions
-    runs-on: ${{ needs.versions.outputs.build-os }}
+  run-tests:
+    needs: determine-versions
+    runs-on: ${{ needs.determine-versions.outputs.build-os }}
     steps:
       - uses: sersoft-gmbh/oss-common-actions/swift/test/xcode@main
         with:
-          xcode-version: ${{ needs.versions.outputs.xcode-version }}
+          xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
           xcode-scheme: ${{ inputs.xcode-scheme }}
           platform: ${{ inputs.platform }}
           platform-version: ${{ inputs.platform-version }}

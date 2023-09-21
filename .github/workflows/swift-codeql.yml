@@ -24,6 +24,7 @@ on:
         description: The Xcode platform to use for building. Required if os is 'macOS' and use-xcodebuild is true.
         required: false
         type: string
+        default: macOS
       xcode-platform-version:
         description: The Xcode platform version to use for building.
         required: false

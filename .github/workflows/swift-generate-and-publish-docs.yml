@@ -128,11 +128,12 @@ jobs:
         with:
           name: ${{ matrix.target }}-docs
           path: ${{ matrix.target }}-docs.tar
-      - name: Fix permissions
-        run: |
-          chmod -c -R +rX .build Package.resolved | while read -r LINE; do
-            echo "::warning title=Invalid file permissions automatically fixed::${LINE}"
-          done
+      # Neccessary for cache action post run not to fail.
+      - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
+        with:
+          paths: |
+            .build
+            Package.resolved
 
   publish-docs:
     needs:

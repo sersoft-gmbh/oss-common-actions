@@ -50,3 +50,9 @@ runs:
         token: ${{ inputs.codecov-token }}
         files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
         fail_ci_if_error: ${{ inputs.fail-if-codecov-fails == 'true' }}
+    # Neccessary for cache action post run not to fail.
+    - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
+      with:
+        paths: |
+          .build
+          Package.resolved

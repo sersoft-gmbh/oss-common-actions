@@ -1,0 +1,31 @@
+name: Fix Permissions
+description: Fixes file permissions.
+
+inputs:
+  paths:
+    description: The paths to fix permissions for.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Fix permissions
+      if: ${{ runner.os == 'Linux' }}
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+      run: |
+        readarray -t COMBINED_PATHS <<<"${PATHS}"
+        chmod -c -R +rX ${COMBINED_PATHS} | while read line; do
+          echo "::warning title=Invalid file permissions automatically fixed::$line"
+        done
+    - name: Fix permissions
+      if: ${{ runner.os == 'macOS' }}
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+      run: |
+        readarray -t COMBINED_PATHS <<<"${PATHS}"
+        chmod -v -R +rX ${COMBINED_PATHS} | while read line; do
+          echo "::warning title=Invalid file permissions automatically fixed::$line"
+        done

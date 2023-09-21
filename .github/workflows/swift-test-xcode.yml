@@ -1,0 +1,67 @@
+name: Xcode Test Swift Package
+
+on:
+  workflow_call:
+    inputs:
+      xcode-scheme:
+        description: The Xcode scheme to test.
+        required: true
+        type: string
+      max-swift-version:
+        description: The maximum supported Swift version.
+        required: true
+        type: string
+      swift-version-offset:
+        description: The Swift version offset to apply.
+        required: true
+        type: number
+        default: 0
+      platform:
+        description: The platform to test on.
+        required: true
+        type: string
+      platform-version:
+        description: The platform version to test on.
+        required: false
+        type: string
+        default: latest
+      fail-if-codecov-fails:
+        description: Whether to fail if codecov fails.
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      CODECOV_TOKEN:
+        description: The token to use for uploading to codecov.
+        required: false
+
+jobs:
+  versions:
+    runs-on: ubuntu-latest
+    outputs:
+      build-os: ${{ steps.builder.outputs.runner-os }}
+      xcode-version: ${{ steps.builder.outputs.xcode-version }}
+    steps:
+      - uses: sersoft-gmbh/oss-common-actions/swift/latest-version@main
+        id: swift-version
+        with:
+          max-supported: ${{ inputs.max-swift-version }}
+          offset: ${{ inputs.swift-version-offset }}
+      - uses: sersoft-gmbh/oss-common-actions/swift/runner-setup-versions@main
+        id: builder
+        with:
+          os: macOS
+          swift-version: ${{ steps.swift-version.outputs.version }}
+
+  test-spm:
+    needs: versions
+    runs-on: ${{ needs.versions.outputs.build-os }}
+    steps:
+      - uses: sersoft-gmbh/oss-common-actions/swift/test/xcode@main
+        with:
+          xcode-version: ${{ needs.versions.outputs.xcode-version }}
+          xcode-scheme: ${{ inputs.xcode-scheme }}
+          platform: ${{ inputs.platform }}
+          platform-version: ${{ inputs.platform-version }}
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}
+          fail-if-codecov-fails: ${{ inputs.fail-if-codecov-fails }}

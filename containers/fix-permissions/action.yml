@@ -15,7 +15,7 @@ runs:
       env:
         PATHS: ${{ inputs.paths }}
       run: |
-        readarray -t COMBINED_PATHS <<<"${PATHS}"
+        IFS=$'\n' read -rd '' -a COMBINED_PATHS <<<"${PATHS}"
         chmod -c -R +rX ${COMBINED_PATHS} | while read line; do
           echo "::warning title=Invalid file permissions automatically fixed::$line"
         done
@@ -25,7 +25,7 @@ runs:
       env:
         PATHS: ${{ inputs.paths }}
       run: |
-        readarray -t COMBINED_PATHS <<<"${PATHS}"
+        IFS=$'\n' read -rd '' -a COMBINED_PATHS <<<"${PATHS}"
         chmod -v -R +rX ${COMBINED_PATHS} | while read line; do
           echo "::warning title=Invalid file permissions automatically fixed::$line"
         done

@@ -11,6 +11,24 @@ on:
         description: The Swift version to use.
         required: true
         type: string
+      use-xcodebuild:
+        description: Whether to use xcodebuild instead of swift build. Requires os to be 'macOS'.
+        required: false
+        type: boolean
+        default: false
+      xcode-scheme:
+        description: The Xcode scheme to use for building. Required if os is 'macOS' and use-xcodebuild is true.
+        required: false
+        type: string
+      xcode-platform:
+        description: The Xcode platform to use for building. Required if os is 'macOS' and use-xcodebuild is true.
+        required: false
+        type: string
+      xcode-platform-version:
+        description: The Xcode platform version to use for building.
+        required: false
+        type: string
+        default: latest
 
 permissions:
   actions: read
@@ -69,8 +87,9 @@ jobs:
 
       # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
       # If this step fails, then you should remove it and run the build manually (see below)
-      # - name: Autobuild
-      #   uses: github/codeql-action/autobuild@v2
+      - name: Autobuild
+        if: ${{ runner.os == 'Linux' || !inputs.use-xcodebuild }}
+        uses: github/codeql-action/autobuild@v2
 
       # ℹ️ Command-line programs to run using the OS shell.
       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
@@ -78,8 +97,25 @@ jobs:
       #   If the Autobuild fails above, remove it and uncomment the following three lines.
       #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
+      - name: Determine Destination
+        uses: sersoft-gmbh/oss-common-actions/swift/xcode-destination-specifier@main
+        if: ${{ runner.os == 'macOS' && inputs.use-xcodebuild }}
+        id: xcode-destination
+        with:
+          platform: ${{ inputs.xcode-platform }}
+          xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
+          platform-version: ${{ inputs.xcode-platform-version }}
+
       - name: Build
-        run: swift build -v
+        uses: sersoft-gmbh/xcodebuild-action@v3
+        if: ${{ runner.os == 'macOS' && inputs.use-xcodebuild }}
+        with:
+          spm-package: './'
+          scheme: ${{ inputs.xcode-scheme }}
+          destination: ${{ steps.xcode-destination.outputs.destination }}
+          action: clean build
+          # Work around PIF issue: https://github.com/apple/swift-package-manager/issues/5767
+          cloned-source-packages-path: ${{ runner.temp }}/xcodebuild-source-packages
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

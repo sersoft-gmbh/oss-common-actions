@@ -68,7 +68,7 @@ runs:
               ;;
               '5.9'*)
                 MACOS_VERSION='13'
-                XCODE_VERSION='15.0-beta' # currently only the beta is available on macOS-13
+                XCODE_VERSION='15.0'
               ;;
               *)
                 echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1

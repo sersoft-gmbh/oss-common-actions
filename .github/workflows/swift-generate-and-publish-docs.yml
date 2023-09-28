@@ -27,6 +27,10 @@ on:
         required: true
         type: string
         default: gh-pages
+      container-before-run:
+        description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -110,6 +114,9 @@ jobs:
           xcode-version: ${{ needs.basic-context.outputs.xcode-version }}
       - uses: sersoft-gmbh/swift-version-action@v3
         id: swift-version
+      - name: Run before command
+        if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
+        run: ${{ inputs.container-before-run }}
       - uses: actions/checkout@v4
       - uses: actions/cache@v3
         with:

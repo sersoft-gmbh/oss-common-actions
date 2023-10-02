@@ -123,11 +123,19 @@ jobs:
         run: ${{ inputs.container-before-run }}
       - uses: actions/checkout@v4
       - uses: actions/cache@v3
+        if: ${{ runner.os != 'macOS' || inputs.xcode-destination == '' }}
         with:
           path: .build
           key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-
+      - uses: actions/cache@v3
+        if: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
+        with:
+          path: .derived-data
+          key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-
       - uses: sersoft-gmbh/swifty-docs-action@v3
         env:
           ENABLE_DOCC_SUPPORT: '1'
@@ -137,7 +145,8 @@ jobs:
           targets: ${{ matrix.target }}
           use-xcodebuild: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
           xcodebuild-scheme: ${{ matrix.target }}
-          xcodebuild-destination: ${{ inputs.xcode-destination}}
+          xcodebuild-destination: ${{ inputs.xcode-destination }}
+          other-xcodebuild-arguments: ${{ (runner.os == 'macOS' && inputs.xcode-destination != '') && '-derivedDataPath\n.derived-data' }}
           enable-inherited-docs: true
           enable-index-building: false
           transform-for-static-hosting: true
@@ -153,9 +162,16 @@ jobs:
           path: ${{ matrix.target }}-docs.tar
       # Necessary for cache action post run not to fail.
       - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
+        if: ${{ runner.os != 'macOS' || inputs.xcode-destination == '' }}
         with:
           paths: |
             .build
+            Package.resolved
+      - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
+        if: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
+        with:
+          paths: |
+            .derived-data
             Package.resolved
 
   publish-docs:

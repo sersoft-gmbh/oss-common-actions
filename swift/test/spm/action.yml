@@ -36,13 +36,13 @@ runs:
       run: |
         SUDO_PREFIX=''
         if [ "${USE_SUDO}" == 'true' ]; then
-          SUDO_PREFIX='sudo '
+          SUDO_PREFIX='sudo'
         fi
+        VERBOSE_ARG=''
         if [ "${ACTIONS_STEP_DEBUG}" == 'true' ] || [ "${RUNNER_DEBUG}" == '1' ]; then
-          "${SUDO_PREFIX}"swift test -v --parallel --enable-code-coverage
-        else
-          "${SUDO_PREFIX}"swift test --parallel --enable-code-coverage
+          VERBOSE_ARG='-v'
         fi
+        ${SUDO_PREFIX} swift test ${VERBOSE_ARG} --parallel --enable-code-coverage
     - uses: sersoft-gmbh/swift-coverage-action@v4
       id: coverage-files
     - uses: codecov/codecov-action@v3

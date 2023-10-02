@@ -144,7 +144,7 @@ jobs:
         with:
           name: ${{ matrix.target }}-docs
           path: ${{ matrix.target }}-docs.tar
-      # Neccessary for cache action post run not to fail.
+      # Necessary for cache action post run not to fail.
       - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
         with:
           paths: |

@@ -31,6 +31,10 @@ on:
         description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
         required: false
         type: string
+      xcode-destination:
+        description: The Xcode destination to use for building. This is only used if the documentation is generated on macOS.
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -131,6 +135,9 @@ jobs:
         with:
           package-version: ${{ needs.basic-context.outputs.version-name }}
           targets: ${{ matrix.target }}
+          use-xcodebuild: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
+          xcodebuild-scheme: ${{ matrix.target }}
+          xcodebuild-destination: ${{ inputs.xcode-destination}}
           enable-inherited-docs: true
           enable-index-building: false
           transform-for-static-hosting: true

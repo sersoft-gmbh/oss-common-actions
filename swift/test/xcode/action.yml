@@ -8,6 +8,10 @@ inputs:
   xcode-version:
     description: The Xcode version in use.
     required: true
+  skip-package-validations:
+    description: Whether to skip package (macro and plugin) validations.
+    required: false
+    default: 'true'
   platform:
     description: The platform to use. Must be either 'macOS', 'iOS', 'iPadOS', 'tvOS', 'watchOS' or 'visionOS' (requires xcode-version 15 or greater).
     required: true
@@ -54,6 +58,8 @@ runs:
         action: test
         parallel-testing-enabled: ${{ inputs.platform != 'watchOS' }}
         enable-code-coverage: true
+        skip-package-plugin-validation: ${{ fromJSON(inputs.skip-package-validations) }}
+        skip-macro-validation: ${{ fromJSON(inputs.skip-package-validations) }}
         derived-data-path: .derived-data
         # Work around PIF issue: https://github.com/apple/swift-package-manager/issues/5767
         cloned-source-packages-path: ${{ runner.temp }}/xcodebuild-source-packages

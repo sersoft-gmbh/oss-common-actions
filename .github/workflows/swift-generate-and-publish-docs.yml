@@ -146,7 +146,9 @@ jobs:
           use-xcodebuild: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
           xcodebuild-scheme: ${{ matrix.target }}
           xcodebuild-destination: ${{ inputs.xcode-destination }}
-          other-xcodebuild-arguments: ${{ (runner.os == 'macOS' && inputs.xcode-destination != '') && '-derivedDataPath\n.derived-data' }}
+          other-xcodebuild-arguments: |
+            -derivedDataPath
+            .derived-data
           enable-inherited-docs: true
           enable-index-building: false
           transform-for-static-hosting: true

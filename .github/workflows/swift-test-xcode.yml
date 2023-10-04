@@ -25,6 +25,11 @@ on:
         required: false
         type: string
         default: latest
+      skip-codecov:
+        description: Whether to skip uploading to codecov.
+        required: false
+        type: boolean
+        default: false
       fail-if-codecov-fails:
         description: Whether to fail if codecov fails.
         required: false
@@ -67,5 +72,6 @@ jobs:
           xcode-scheme: ${{ inputs.xcode-scheme }}
           platform: ${{ inputs.platform }}
           platform-version: ${{ inputs.platform-version }}
+          skip-codecov: ${{ inputs.skip-codecov }}
           codecov-token: ${{ secrets.CODECOV_TOKEN }}
           fail-if-codecov-fails: ${{ inputs.fail-if-codecov-fails }}

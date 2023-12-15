@@ -192,7 +192,7 @@ jobs:
         with:
           ref: ${{ inputs.pages-branch }}
           path: repository
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: Extract tars

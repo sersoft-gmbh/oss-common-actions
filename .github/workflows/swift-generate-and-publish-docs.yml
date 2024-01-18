@@ -122,14 +122,14 @@ jobs:
         if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
         run: ${{ inputs.container-before-run }}
       - uses: actions/checkout@v4
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: ${{ runner.os != 'macOS' || inputs.xcode-destination == '' }}
         with:
           path: .build
           key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
         with:
           path: .derived-data

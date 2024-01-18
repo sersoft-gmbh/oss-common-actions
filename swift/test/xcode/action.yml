@@ -48,7 +48,7 @@ runs:
         xcode-version: ${{ inputs.xcode-version }}
         platform-version: ${{ inputs.platform-version }}
     - uses: actions/checkout@v4
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: .derived-data
         key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ inputs.platform }}-${{ hashFiles('**/Package.resolved') }}

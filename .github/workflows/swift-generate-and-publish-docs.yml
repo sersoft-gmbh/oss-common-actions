@@ -317,4 +317,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cleanup Artifacts
-        uses: joutvhu/delete-artifact@v1
+        uses: joutvhu/delete-artifact@v2

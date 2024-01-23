@@ -68,7 +68,7 @@ runs:
               ;;
               '5.9'*)
                 MACOS_VERSION='13'
-                XCODE_VERSION='15.0'
+                XCODE_VERSION='15.2'
               ;;
               *)
                 echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1

@@ -54,7 +54,7 @@ runs:
     - uses: sersoft-gmbh/swift-coverage-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       with:
         token: ${{ inputs.codecov-token }}

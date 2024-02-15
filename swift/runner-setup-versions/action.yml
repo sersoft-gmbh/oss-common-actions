@@ -38,18 +38,6 @@ runs:
             MACOS_VERSION=''
             XCODE_VERSION=''
             case "${SWIFT_VERSION}" in
-              '5.2'*)
-                MACOS_VERSION='11'
-                XCODE_VERSION='11.7'
-              ;;
-              '5.3'*)
-                MACOS_VERSION='11'
-                XCODE_VERSION='12.4'
-              ;;
-              '5.4'*)
-                MACOS_VERSION='11'
-                XCODE_VERSION='12.5.1'
-              ;;
               '5.5'*)
                 MACOS_VERSION='12'
                 XCODE_VERSION='13.2.1'
@@ -67,7 +55,7 @@ runs:
                 XCODE_VERSION='14.3.1'
               ;;
               '5.9'*)
-                MACOS_VERSION='13'
+                MACOS_VERSION='14'
                 XCODE_VERSION='15.2'
               ;;
               *)

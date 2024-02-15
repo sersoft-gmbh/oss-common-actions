@@ -54,6 +54,10 @@ runs:
     - uses: sersoft-gmbh/swift-coverage-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files
+    - name: Workaround for codecov/feedback#263
+      if: ${{ inputs.skip-codecov != 'true' && runner.os == 'Linux' }}
+      shell: bash
+      run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
     - uses: codecov/codecov-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       with:

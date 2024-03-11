@@ -57,6 +57,7 @@ runs:
               '5.9'*)
                 MACOS_VERSION='14'
                 XCODE_VERSION='15.2'
+              ;;
               '5.10'*)
                 MACOS_VERSION='14'
                 XCODE_VERSION='15.3'

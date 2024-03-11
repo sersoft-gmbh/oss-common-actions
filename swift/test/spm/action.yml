@@ -39,11 +39,11 @@ runs:
         RUNNER_DEBUG: ${{ runner.debug }}
       run: |
         SUDO_PREFIX=''
-        if [ "${USE_SUDO}" == 'true' ]; then
+        if [ "${USE_SUDO}" = 'true' ]; then
           SUDO_PREFIX='sudo'
         fi
         VERBOSE_ARG=''
-        if [ "${ACTIONS_STEP_DEBUG}" == 'true' ] || [ "${RUNNER_DEBUG}" == '1' ]; then
+        if [ "${ACTIONS_STEP_DEBUG}" = 'true' ] || [ "${RUNNER_DEBUG}" = '1' ]; then
           VERBOSE_ARG='-v'
         fi
         ${SUDO_PREFIX} swift test ${VERBOSE_ARG} --parallel --enable-code-coverage

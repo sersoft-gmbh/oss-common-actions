@@ -18,6 +18,9 @@ outputs:
   xcode-version:
     description: The Xcode version to use for the runner. Not set if ubuntu is used.
     value: ${{ steps.determine-versions.outputs.xcode-version }}
+  xcode-version-supported:
+    description: Whether the Xcode version is supported on GH hosted runners. Not set if ubuntu is used.
+    value: ${{ steps.determine-versions.outputs.xcode-version-supported }}
 
 runs:
   using: composite
@@ -37,6 +40,7 @@ runs:
           'macOS')
             MACOS_VERSION=''
             XCODE_VERSION=''
+            XCODE_VERSION_SUPPORTED='true'
             case "${SWIFT_VERSION}" in
               '5.5'*)
                 MACOS_VERSION='12'
@@ -61,6 +65,8 @@ runs:
               '5.10'*)
                 MACOS_VERSION='14'
                 XCODE_VERSION='15.3'
+                # See https://github.com/actions/runner-images/issues/9459
+                XCODE_VERSION_SUPPORTED='false'
               ;;
               *)
                 echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1
@@ -68,6 +74,7 @@ runs:
             esac
             echo "runner-os=macos-${MACOS_VERSION}" >> "${GITHUB_OUTPUT}"
             echo "xcode-version=${XCODE_VERSION}" >> "${GITHUB_OUTPUT}"
+            echo "xcode-version-supported=${XCODE_VERSION_SUPPORTED}" >> "${GITHUB_OUTPUT}"
           ;;
           *)
             echo "::error title=Unknown OS!::Unknown os: ${INPUT_OS}" && exit 1

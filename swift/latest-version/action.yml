@@ -83,7 +83,7 @@ runs:
         OFFSET: ${{ inputs.offset || '0' }}
         ADJUSTED_VERSION: ${{ steps.apply-offset.outputs.adjusted-version }}
       run: |
-        if [ "${OFFSET}" == '0' ]; then
+        if [ "${OFFSET}" = '0' ]; then
           echo "swift-version=${BASE_VERSION}" >> "${GITHUB_OUTPUT}"
         else
           echo "swift-version=${ADJUSTED_VERSION}" >> "${GITHUB_OUTPUT}"

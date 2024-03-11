@@ -25,6 +25,11 @@ on:
         required: false
         type: string
         default: latest
+      fail-if-xcode-not-supported:
+        description: Whether to fail if the Xcode version is not supported on GH hosted runners.
+        required: false
+        type: boolean
+        default: false
       skip-codecov:
         description: Whether to skip uploading to codecov.
         required: false
@@ -50,6 +55,7 @@ jobs:
     outputs:
       build-os: ${{ steps.builder.outputs.runner-os }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}
+      xcode-version-supported: ${{ steps.builder.outputs.xcode-version-supported }}
     steps:
       - uses: sersoft-gmbh/oss-common-actions/swift/latest-version@main
         id: swift-version
@@ -67,6 +73,7 @@ jobs:
     runs-on: ${{ needs.determine-versions.outputs.build-os }}
     steps:
       - uses: sersoft-gmbh/oss-common-actions/swift/test/xcode@main
+        if: ${{ runner.os == 'macOS' && (needs.determine-versions.outputs.xcode-version-supported == 'true' || inputs.fail-if-xcode-not-supported) }}
         with:
           xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
           xcode-scheme: ${{ inputs.xcode-scheme }}

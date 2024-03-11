@@ -18,3 +18,18 @@ jobs:
     steps:
       - uses: sersoft-gmbh/oss-common-actions/path/to/action@main
 ```
+## Maintenance
+
+### Swift
+
+Adding a new Swift version requires changes in the following workflows/files:
+
+- `swift/latest-version/action.yml`
+- `swift/runner-setup-versions/action.yml`
+
+### Xcode
+
+Adding a new Xcode version requires changes in the following workflows/files:
+
+- `swift/runner-setup-versions/action.yml`
+- `swift/xcode-destination-specifier/action.yml`

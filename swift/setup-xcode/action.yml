@@ -5,10 +5,16 @@ inputs:
   swift-version:
     description: The Swift version to setup Xcode for
     required: true
+  fail-if-not-supported:
+    description: Whether to fail if the Xcode version is not supported on GH hosted runners.
+    default: 'true'
 outputs:
   xcode-version:
     description: The Xcode version that was set up.
     value: ${{ steps.determine-version.outputs.xcode-version }}
+  xcode-version-supported:
+    description: Whether the Xcode version is supported on GH hosted runners.
+    value: ${{ steps.determine-version.outputs.xcode-version-supported }}
 
 runs:
   using: composite
@@ -19,5 +25,6 @@ runs:
         os: macOS
         swift-version: ${{ inputs.swift-version }}
     - uses: maxim-lobanov/setup-xcode@v1
+      if: ${{ inputs.fail-if-not-supported == 'true' || steps.determine-version.outputs.xcode-version-supported == 'true' }}
       with:
         xcode-version: ${{ steps.determine-version.outputs.xcode-version }}

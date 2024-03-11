@@ -25,6 +25,11 @@ on:
         description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
         required: false
         type: string
+      fail-if-xcode-not-supported:
+        description: Whether to fail if the Xcode version is not supported on GH hosted runners.
+        required: false
+        type: boolean
+        default: false
       skip-codecov:
         description: Whether to skip uploading to codecov.
         required: false
@@ -51,6 +56,7 @@ jobs:
       build-os: ${{ steps.builder.outputs.runner-os }}
       build-container: ${{ steps.builder.outputs.container }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}
+      xcode-version-supported: ${{ steps.builder.outputs.xcode-version-supported }}
     steps:
       - uses: sersoft-gmbh/oss-common-actions/swift/latest-version@main
         id: swift-version
@@ -69,13 +75,14 @@ jobs:
     container: ${{ needs.determine-versions.outputs.build-container }}
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
-        if: ${{ runner.os == 'macOS' }}
+        if: ${{ runner.os == 'macOS' && (needs.determine-versions.outputs.xcode-version-supported == 'true' || inputs.fail-if-xcode-not-supported) }}
         with:
           xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
       - name: Run before command
         if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
         run: ${{ inputs.container-before-run }}
       - uses: sersoft-gmbh/oss-common-actions/swift/test/spm@main
+        if: ${{ runner.os != 'macOS' || needs.determine-versions.outputs.xcode-version-supported == 'true' }}
         with:
           use-sudo: ${{ inputs.use-sudo }}
           skip-codecov: ${{ inputs.skip-codecov }}

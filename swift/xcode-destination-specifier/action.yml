@@ -63,7 +63,7 @@ runs:
         PLATFORM_VERSION: ${{ inputs.platform-version || 'latest' }}
       run: |
         SIMULATOR_OS="${PLATFORM}"
-        if [ "${PLATFORM}" == 'iPadOS' ]; then
+        if [ "${PLATFORM}" = 'iPadOS' ]; then
           SIMULATOR_OS='iOS'
         fi
         DEVICE_NAME=''
@@ -125,7 +125,7 @@ runs:
         MACOS_DESTINATION: ${{ steps.macos-destination.outputs.destination }}
         SIMULATOR_DESTINATION: ${{ steps.simulator-destination.outputs.destination }}
       run: |
-        if [ "${PLATFORM}" == 'macOS' ]; then
+        if [ "${PLATFORM}" = 'macOS' ]; then
           echo "xcode-destination=${MACOS_DESTINATION}" >> "${GITHUB_OUTPUT}"
         else
           echo "xcode-destination=${SIMULATOR_DESTINATION}" >> "${GITHUB_OUTPUT}"

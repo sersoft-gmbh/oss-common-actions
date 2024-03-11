@@ -121,6 +121,7 @@ jobs:
           action: clean build
           # Work around PIF issue: https://github.com/apple/swift-package-manager/issues/5767
           cloned-source-packages-path: ${{ runner.temp }}/xcodebuild-source-packages
+          output-formatter: ''
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

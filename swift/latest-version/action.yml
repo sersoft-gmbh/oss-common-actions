@@ -27,6 +27,16 @@ runs:
       run: |
         SWIFT_VERSION=''
         case "${BASE_VERSION}" in
+        '5.10')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='5.9';;
+            '2') SWIFT_VERSION='5.8';;
+            '3') SWIFT_VERSION='5.7';;
+            '4') SWIFT_VERSION='5.6';;
+            '5') SWIFT_VERSION='5.5';;
+              *) ;;
+          esac
+        ;;
         '5.9')
           case "${OFFSET}" in
             '1') SWIFT_VERSION='5.8';;

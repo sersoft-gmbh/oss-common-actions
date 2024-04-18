@@ -58,7 +58,13 @@ runs:
     - name: Fix build artifact owner
       if: ${{ inputs.use-sudo == 'true' }}
       shell: bash
-      run: sudo chown -R "$(whoami)" .build Package.resolved
+      run: |
+        if [ -d '.build' ]; then
+          sudo chown -R "$(whoami)" '.build'
+        fi
+        if [ -f 'Package.resolved' ]; then
+          sudo chown "$(whoami)" 'Package.resolved'
+        fi
     - uses: sersoft-gmbh/swift-coverage-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files

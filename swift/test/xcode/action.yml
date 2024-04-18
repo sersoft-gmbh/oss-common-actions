@@ -2,11 +2,15 @@ name: Xcode Test Swift Package
 description: Tests a Swift package using Xcode.
 
 inputs:
-  xcode-scheme:
-    description: The Xcode scheme to test.
-    required: true
   xcode-version:
     description: The Xcode version in use.
+    required: true
+  delete-package-resolved-file-before-build:
+    description: Whether to delete the Package.resolved file before building.
+    required: false
+    default: 'false'
+  xcode-scheme:
+    description: The Xcode scheme to test.
     required: true
   skip-package-validations:
     description: Whether to skip package (macro and plugin) validations.
@@ -54,6 +58,10 @@ runs:
         key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ inputs.platform }}-${{ hashFiles('**/Package.resolved') }}
         restore-keys: |
           ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ inputs.platform }}-
+    - name: Remove Package.resolved file
+      if: ${{ inputs.delete-package-resolved-file-before-build == 'true' }}
+      shell: bash
+      run: rm -f Package.resolved
     - uses: sersoft-gmbh/xcodebuild-action@v3
       with:
         spm-package: './'

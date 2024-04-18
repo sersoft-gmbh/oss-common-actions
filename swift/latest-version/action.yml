@@ -13,6 +13,9 @@ outputs:
   version:
     description: The latest Swift version with the given offset applied.
     value: ${{ steps.determine-version.outputs.swift-version }}
+  has-breaking-resolved-file-changes:
+    description: Whether the Package.resolved file has breaking changes compared to the max-supported version.
+    value: ${{ steps.determine-version.outputs.has-breaking-resolved-file-changes }}
 
 runs:
   using: composite
@@ -26,6 +29,7 @@ runs:
         OFFSET: ${{ inputs.offset }}
       run: |
         SWIFT_VERSION=''
+        HAS_BREAKING_RESOLVED_FILE_CHANGES='false'
         case "${BASE_VERSION}" in
         '5.10')
           case "${OFFSET}" in
@@ -36,13 +40,17 @@ runs:
             '5') SWIFT_VERSION='5.5';;
               *) ;;
           esac
+          HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
         ;;
         '5.9')
           case "${OFFSET}" in
             '1') SWIFT_VERSION='5.8';;
             '2') SWIFT_VERSION='5.7';;
             '3') SWIFT_VERSION='5.6';;
-            '4') SWIFT_VERSION='5.5';;
+            '4')
+              SWIFT_VERSION='5.5'
+              HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
+              ;;
               *) ;;
           esac
         ;;
@@ -50,14 +58,20 @@ runs:
           case "${OFFSET}" in
             '1') SWIFT_VERSION='5.7';;
             '2') SWIFT_VERSION='5.6';;
-            '3') SWIFT_VERSION='5.5';;
+            '3')
+              SWIFT_VERSION='5.5'
+              HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
+              ;;
               *) ;;
           esac
         ;;
         '5.7')
           case "${OFFSET}" in
             '1') SWIFT_VERSION='5.6';;
-            '2') SWIFT_VERSION='5.5';;
+            '2')
+              SWIFT_VERSION='5.5'
+              HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
+              ;;
               *) ;;
           esac
         ;;
@@ -66,6 +80,7 @@ runs:
             '1') SWIFT_VERSION='5.5';;
               *) ;;
           esac
+          HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
         ;;
         *) ;;
         esac
@@ -82,9 +97,12 @@ runs:
         BASE_VERSION: ${{ inputs.max-supported }}
         OFFSET: ${{ inputs.offset || '0' }}
         ADJUSTED_VERSION: ${{ steps.apply-offset.outputs.adjusted-version }}
+        HAS_BREAKING_RESOLVED_FILE_CHANGES: ${{ steps.apply-offset.outputs.has-breaking-resolved-file-changes }}
       run: |
         if [ "${OFFSET}" = '0' ]; then
           echo "swift-version=${BASE_VERSION}" >> "${GITHUB_OUTPUT}"
+          echo 'has-breaking-resolved-file-changes=false' >> "${GITHUB_OUTPUT}"
         else
           echo "swift-version=${ADJUSTED_VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "has-breaking-resolved-file-changes=${HAS_BREAKING_RESOLVED_FILE_CHANGES}" >> "${GITHUB_OUTPUT}"
         fi

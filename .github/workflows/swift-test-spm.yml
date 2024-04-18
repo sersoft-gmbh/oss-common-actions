@@ -57,6 +57,7 @@ jobs:
       build-container: ${{ steps.builder.outputs.container }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}
       xcode-version-supported: ${{ steps.builder.outputs.xcode-version-supported }}
+      remove-package-resolved-file-before-build: ${{ steps.swift-version.outputs.has-breaking-resolved-file-changes }}
     steps:
       - uses: sersoft-gmbh/oss-common-actions/swift/latest-version@main
         id: swift-version
@@ -84,6 +85,7 @@ jobs:
       - uses: sersoft-gmbh/oss-common-actions/swift/test/spm@main
         if: ${{ runner.os != 'macOS' || needs.determine-versions.outputs.xcode-version-supported == 'true' }}
         with:
+          delete-package-resolved-file-before-build: ${{ needs.determine-versions.outputs.remove-package-resolved-file-before-build }}
           use-sudo: ${{ inputs.use-sudo }}
           skip-codecov: ${{ inputs.skip-codecov }}
           codecov-token: ${{ secrets.CODECOV_TOKEN }}

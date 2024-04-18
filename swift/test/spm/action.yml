@@ -2,6 +2,10 @@ name: SPM Test Swift Package
 description: Tests a Swift package using SPM.
 
 inputs:
+  delete-package-resolved-file-before-build:
+    description: Whether to delete the Package.resolved file before building.
+    required: false
+    default: 'false'
   use-sudo:
     description: Whether to use sudo for running the tests.
     required: false
@@ -32,6 +36,10 @@ runs:
         key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
         restore-keys: |
           ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-
+    - name: Remove Package.resolved file
+      if: ${{ inputs.delete-package-resolved-file-before-build == 'true' }}
+      shell: bash
+      run: rm -f Package.resolved
     - name: Build & Test
       shell: bash
       env:

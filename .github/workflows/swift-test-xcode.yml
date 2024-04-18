@@ -56,6 +56,7 @@ jobs:
       build-os: ${{ steps.builder.outputs.runner-os }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}
       xcode-version-supported: ${{ steps.builder.outputs.xcode-version-supported }}
+      remove-package-resolved-file-before-build: ${{ steps.swift-version.outputs.has-breaking-resolved-file-changes }}
     steps:
       - uses: sersoft-gmbh/oss-common-actions/swift/latest-version@main
         id: swift-version
@@ -76,6 +77,7 @@ jobs:
         if: ${{ runner.os == 'macOS' && (needs.determine-versions.outputs.xcode-version-supported == 'true' || inputs.fail-if-xcode-not-supported) }}
         with:
           xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
+          delete-package-resolved-file-before-build: ${{ needs.determine-versions.outputs.remove-package-resolved-file-before-build }}
           xcode-scheme: ${{ inputs.xcode-scheme }}
           platform: ${{ inputs.platform }}
           platform-version: ${{ inputs.platform-version }}

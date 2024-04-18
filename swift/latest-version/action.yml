@@ -89,6 +89,7 @@ runs:
           exit 1
         else
           echo "adjusted-version=${SWIFT_VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "has-breaking-resolved-file-changes=${HAS_BREAKING_RESOLVED_FILE_CHANGES}" >> "${GITHUB_OUTPUT}"
         fi
     - name: Determine Version
       id: determine-version

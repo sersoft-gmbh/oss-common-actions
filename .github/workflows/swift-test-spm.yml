@@ -45,7 +45,8 @@ on:
         description: A command to run before the tests are run. This is only run in a container.
         required: false
         type: string
-        deprecationMessage: Use before-run instead!
+        # deprecated!
+
     secrets:
       CODECOV_TOKEN:
         description: The token to use for uploading to codecov.
@@ -92,7 +93,9 @@ jobs:
         run: ${{ inputs.before-run }}
       - name: Run (legacy) before command
         if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
-        run: ${{ inputs.container-before-run }}
+        run: |
+          echo '::warning::The container-before-run input is deprecated! Use before-run instead!'
+          ${{ inputs.container-before-run }}
       - uses: sersoft-gmbh/oss-common-actions/swift/test/spm@main
         if: ${{ runner.os != 'macOS' || needs.determine-versions.outputs.xcode-version-supported == 'true' }}
         with:

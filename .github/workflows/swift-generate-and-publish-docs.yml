@@ -40,7 +40,7 @@ on:
         description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
         required: false
         type: string
-        deprecationMessage: Use `before-run` instead
+        # deprecationMessage: Use `before-run` instead
 
 permissions:
   contents: write
@@ -124,14 +124,16 @@ jobs:
           xcode-version: ${{ needs.basic-context.outputs.xcode-version }}
       - uses: sersoft-gmbh/swift-version-action@v3
         id: swift-version
-      - name: Run (legacy) before command
+      - name: Run before command
         if: ${{ inputs.before-run != '' }}
         env:
           IS_IN_CONTAINER: ${{ needs.basic-context.outputs.build-container && 1 || 0 }}
         run: ${{ inputs.before-run }}
       - name: Run (legacy) before command
         if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
-        run: ${{ inputs.container-before-run }}
+        run: |
+          echo '::warning::The container-before-run input is deprecated! Use before-run instead!'
+          ${{ inputs.container-before-run }}
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
         if: ${{ runner.os != 'macOS' || inputs.xcode-destination == '' }}

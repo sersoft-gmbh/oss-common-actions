@@ -5,6 +5,7 @@ These contain both reusable workflows (inside `.github/workflows`) as well as co
 
 **IMPORTANT:** These are not meant for general public use and will change without notice!
 
+
 ## Usage
 
 Both kinds of actions can be used by referencing them in a workflow file like this:
@@ -18,6 +19,7 @@ jobs:
     steps:
       - uses: sersoft-gmbh/oss-common-actions/path/to/action@main
 ```
+
 ## Maintenance
 
 ### Swift

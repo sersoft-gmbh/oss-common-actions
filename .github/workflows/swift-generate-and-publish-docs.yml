@@ -27,14 +27,20 @@ on:
         required: true
         type: string
         default: gh-pages
-      container-before-run:
-        description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
+      before-run:
+        description: A command to run before the documentation is generated.
         required: false
         type: string
       xcode-destination:
         description: The Xcode destination to use for building. This is only used if the documentation is generated on macOS.
         required: false
         type: string
+
+      container-before-run:
+        description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
+        required: false
+        type: string
+        deprecationMessage: Use `before-run` instead
 
 permissions:
   contents: write
@@ -118,7 +124,12 @@ jobs:
           xcode-version: ${{ needs.basic-context.outputs.xcode-version }}
       - uses: sersoft-gmbh/swift-version-action@v3
         id: swift-version
-      - name: Run before command
+      - name: Run (legacy) before command
+        if: ${{ inputs.before-run != '' }}
+        env:
+          IS_IN_CONTAINER: ${{ needs.basic-context.outputs.build-container && 1 || 0 }}
+        run: ${{ inputs.before-run }}
+      - name: Run (legacy) before command
         if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
         run: ${{ inputs.container-before-run }}
       - uses: actions/checkout@v4
@@ -228,7 +239,7 @@ jobs:
           target_count=0
           target_list=""
           single_target_name=""
-          for target in $(ls "${TARGET_DOCS_DIR}"); do
+          for target in "${TARGET_DOCS_DIR}/"*; do
             if [ -d "${TARGET_DOCS_DIR}/${target}" ]; then
               single_target_name="${target}"
               target_count=$((target_count+1))

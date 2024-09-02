@@ -21,8 +21,8 @@ on:
         required: false
         type: boolean
         default: false
-      container-before-run:
-        description: A command to run before the documentation is generated. This is only run if the documentation is generated in a container.
+      before-run:
+        description: A command to run before the tests are run.
         required: false
         type: string
       fail-if-xcode-not-supported:
@@ -40,6 +40,12 @@ on:
         required: false
         type: boolean
         default: false
+
+      container-before-run:
+        description: A command to run before the tests are run. This is only run in a container.
+        required: false
+        type: string
+        deprecationMessage: Use before-run instead!
     secrets:
       CODECOV_TOKEN:
         description: The token to use for uploading to codecov.
@@ -80,6 +86,11 @@ jobs:
         with:
           xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
       - name: Run before command
+        if: ${{ inputs.before-run != '' }}
+        env:
+          IS_IN_CONTAINER: ${{ needs.determine-versions.outputs.build-container && 1 || 0 }}
+        run: ${{ inputs.before-run }}
+      - name: Run (legacy) before command
         if: ${{ runner.os != 'macOS' && inputs.container-before-run != '' }}
         run: ${{ inputs.container-before-run }}
       - uses: sersoft-gmbh/oss-common-actions/swift/test/spm@main

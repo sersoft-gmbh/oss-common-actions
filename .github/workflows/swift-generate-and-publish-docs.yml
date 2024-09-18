@@ -100,9 +100,7 @@ jobs:
         shell: bash
         run: |
           delimiter="$(openssl rand -hex 8)"
-          echo "package-dump<<${delimiter}" >> "${GITHUB_OUTPUT}"
-          swift package dump-package >> "${GITHUB_OUTPUT}"
-          echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+          { echo "package-dump<<${delimiter}"; swift package dump-package; echo "${delimiter}"; } >> "${GITHUB_OUTPUT}"
 
   generate-docs:
     needs:

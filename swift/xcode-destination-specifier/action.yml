@@ -119,7 +119,7 @@ runs:
           '16'*)
             case "${PLATFORM}" in
               'iOS')      DEVICE_NAME='iPhone 16 Pro';;
-              'iPadOS')   DEVICE_NAME='iPad Pro (11-inch) (M4)';;
+              'iPadOS')   DEVICE_NAME='iPad Pro 11-inch (M4)';;
               'tvOS')     DEVICE_NAME='Apple TV 4K (3rd generation)';;
               'watchOS')  DEVICE_NAME='Apple Watch Ultra 2 (49mm)';;
               'visionOS') DEVICE_NAME='Apple Vision Pro';;

@@ -56,6 +56,7 @@ runs:
       shell: bash
       run: |
           sudo xcodebuild -runFirstLaunch
+          sudo xcrun simctl list # needed to boot the simulator
           sudo xcodebuild -downloadPlatform visionOS
           sudo xcodebuild -runFirstLaunch
     - uses: actions/checkout@v4

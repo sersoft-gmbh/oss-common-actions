@@ -51,6 +51,13 @@ runs:
         platform: ${{ inputs.platform }}
         xcode-version: ${{ inputs.xcode-version }}
         platform-version: ${{ inputs.platform-version }}
+    - name: Download visionOS
+      if: ${{ inputs.platform == 'visionOS' }}
+      shell: bash
+      run: |
+          sudo xcodebuild -runFirstLaunch
+          sudo xcodebuild -downloadPlatform visionOS
+          sudo xcodebuild -runFirstLaunch
     - uses: actions/checkout@v4
     - uses: actions/cache@v4
       with:

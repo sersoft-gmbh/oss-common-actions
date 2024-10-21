@@ -28,7 +28,7 @@ on:
         type: string
         default: gh-pages
       before-run:
-        description: A command to run before the documentation is generated.
+        description: A command to run before the tests are run. The environment variable `IS_IN_CONTAINER` is set to 1 if the command is run within a container.
         required: false
         type: string
       xcode-destination:

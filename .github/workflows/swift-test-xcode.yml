@@ -25,6 +25,10 @@ on:
         required: false
         type: string
         default: latest
+      before-run:
+        description: A command to run before the tests are run. The environment variable `IS_IN_CONTAINER` is set to 1 if the command is run within a container.
+        required: false
+        type: string
       fail-if-xcode-not-supported:
         description: Whether to fail if the Xcode version is not supported on GH hosted runners.
         required: false
@@ -73,6 +77,11 @@ jobs:
     needs: determine-versions
     runs-on: ${{ needs.determine-versions.outputs.build-os }}
     steps:
+      - name: Run before command
+        if: ${{ inputs.before-run != '' }}
+        env:
+          IS_IN_CONTAINER: 0
+        run: ${{ inputs.before-run }}
       - uses: sersoft-gmbh/oss-common-actions/swift/test/xcode@main
         if: ${{ runner.os == 'macOS' && (needs.determine-versions.outputs.xcode-version-supported == 'true' || inputs.fail-if-xcode-not-supported) }}
         with:

@@ -93,7 +93,7 @@ runs:
           ./.build
           ./.derived-data
           $HOME/Library/Developer/Xcode/DerivedData
-    - uses: codecov/codecov-action@v4
+    - uses: codecov/codecov-action@v5
       if: ${{ inputs.skip-codecov != 'true' }}
       with:
         token: ${{ inputs.codecov-token }}

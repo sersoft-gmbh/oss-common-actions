@@ -68,10 +68,30 @@ runs:
     - uses: sersoft-gmbh/swift-coverage-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files
-    # - name: Workaround for codecov/feedback#263
-    #   if: ${{ inputs.skip-codecov != 'true' && runner.os == 'Linux' }}
-    #   shell: bash
-    #   run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+    - name: Workaround for codecov/codecov-action#1731
+      if: ${{ inputs.skip-codecov != 'true' && runner.os == 'Linux' }}
+      shell: bash
+      # We might be running in a container which does not have these tools installed
+      run: |
+        PACKAGES=()
+        if [ -z "$(which curl)" ]; then
+          PACKAGES+=('curl')
+        fi
+        if [ -z "$(which jq)" ]; then
+          PACKAGES+=('jq')
+        fi
+        if [ "${#PACKAGES}" -gt 0 ]; then
+          if [ -n "$(which apt-get)" ]; then
+            apt-get update --quiet
+            apt-get install --assume-yes --no-install-recommends "${PACKAGES[@]}"
+          elif [ -n "$(which brew)" ]; then
+            brew update
+            brew install "${PACKAGES[@]}"
+          else
+            echo '::error title=Missing dependencies::There are missing codecov dependencies and no suitable package manager was found!'
+            exit 1
+          fi
+        fi
     - uses: codecov/codecov-action@v5
       if: ${{ inputs.skip-codecov != 'true' }}
       with:

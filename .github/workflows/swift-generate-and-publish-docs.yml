@@ -236,7 +236,7 @@ jobs:
       - merge-docs
     permissions:
       contents: write
-    runs-on: ubunut-latest
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ inputs.organisation }}/${{ inputs.repository }}/${{ inputs.pages-branch }}
       cancel-in-progress: false

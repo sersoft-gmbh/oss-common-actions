@@ -210,7 +210,7 @@ jobs:
       - name: Merge documentations
         env:
           REPO_NAME: ${{ inputs.repository }}
-        run: "$(which docc || xcrun --find docc)" merge artifacts/*.doccarchive --output-path "${REPO_NAME}.doccarchive"
+        run: '"$(which docc || xcrun --find docc)" merge artifacts/*.doccarchive --output-path "${REPO_NAME}.doccarchive"'
       - name: Package combined docs
         env:
           REPO_NAME: ${{ inputs.repository }}

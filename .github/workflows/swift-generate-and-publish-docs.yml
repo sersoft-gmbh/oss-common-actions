@@ -168,11 +168,11 @@ jobs:
       - name: Package docs
         env:
           TARGET: ${{ matrix.target }}
-        run: tar -cvf "${TARGET}-docs.doccarchive.tar" "${TARGET}-docs.doccarchive"
+        run: tar -cvf "${TARGET}.doccarchive.tar" "${TARGET}.doccarchive"
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}-docs
-          path: ${{ matrix.target }}-docs.doccarchive.tar
+          name: ${{ matrix.target }}.doccarchive.tar
+          path: ${{ matrix.target }}.doccarchive.tar
           retention-days: 3
       # Necessary for cache action post run not to fail.
       - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
@@ -206,18 +206,18 @@ jobs:
         with:
           path: artifacts
       - name: Extract artifacts
-        run: find artifacts -name '*.doccarchive.tar' -execdir tar -xvf '{}' --strip-components 1 \; -delete
+        run: find artifacts -type f -name '*.doccarchive.tar' -execdir tar -xvf '{}' --strip-components 1 \; -delete
       - name: Merge documentations
         env:
           REPO_NAME: ${{ inputs.repository }}
-        run: '"$(which docc || xcrun --find docc)" merge artifacts/*.doccarchive --output-path "${REPO_NAME}.doccarchive"'
+        run: find artifacts -type d -name '*.doccarchive' -print0 | xargs --null "$(which docc || xcrun --find docc)" merge --output-path "${REPO_NAME}.doccarchive"
       - name: Package combined docs
         env:
           REPO_NAME: ${{ inputs.repository }}
         run: tar -cvf "${REPO_NAME}.doccarchive.tar" "${REPO_NAME}.doccarchive"
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.repository }}-combined-docs
+          name: ${{ inputs.repository }}-combined.doccarchive.tar
           path: ${{ inputs.repository }}.doccarchive.tar
           retention-days: 3
 
@@ -239,7 +239,7 @@ jobs:
           path: repository
       - uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.repository }}-combined-docs
+          name: ${{ inputs.repository }}-combined.doccarchive.tar
       - name: Extract artifact
         env:
           TAR_NAME: ${{ inputs.repository }}.doccarchive.tar

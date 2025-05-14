@@ -307,7 +307,7 @@ jobs:
       - generate-docs
       - merge-docs
       - publish-docs
-    if: {{ always() }}
+    if: ${{ always() }}
     permissions: {}
     runs-on: ubuntu-latest
     steps:

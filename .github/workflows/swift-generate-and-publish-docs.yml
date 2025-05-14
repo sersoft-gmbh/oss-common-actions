@@ -211,6 +211,8 @@ jobs:
         env:
           REPO_NAME: ${{ inputs.repository }}
         run: |
+          find artifacts -type d -name '*.doccarchive' -print
+          ls -al artifacts
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \
             sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}-combined.doccarchive'"

@@ -210,7 +210,11 @@ jobs:
       - name: Merge documentations
         env:
           REPO_NAME: ${{ inputs.repository }}
-        run: find artifacts -type d -name '*.doccarchive' -print0 | xargs --null -J % "$(which docc || xcrun --find docc)" merge % --output-path "${REPO_NAME}.doccarchive"
+        run: |
+          find artifacts -type d -name '*.doccarchive' -print0 \
+          | xargs --null --no-run-if-empty \
+            sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}.doccarchive'"
+        # We could use `xargs -J` in POSIX - but GNU xargs doesn't have -J...
       - name: Package combined docs
         env:
           REPO_NAME: ${{ inputs.repository }}

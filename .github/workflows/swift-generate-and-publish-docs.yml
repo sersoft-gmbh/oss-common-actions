@@ -211,10 +211,14 @@ jobs:
         env:
           OUTPUT_PATH: ${{ inputs.repository }}-combined.doccarchive
         run: |
-          find artifacts -type d -name '*.doccarchive' -print0 \
-          | xargs --null --no-run-if-empty \
-            sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'" sh
-        # We could use `xargs -J` in POSIX - but GNU xargs doesn't have -J...
+          if [ "$(find artifacts -type d -name '*.doccarchive' -print | wc -l)" -gt 1 ]; then
+            # We could use `xargs -J` in POSIX - but GNU xargs doesn't have -J...
+            find artifacts -type d -name '*.doccarchive' -print0 \
+            | xargs --null --no-run-if-empty \
+              sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'" sh
+          else
+            find artifacts -type d -name '*.doccarchive' -exec cp -R '{}' "$(realpath "${OUTPUT_PATH}")" \;
+          fi
       - name: Package combined docs
         env:
           REPO_NAME: ${{ inputs.repository }}

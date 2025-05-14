@@ -213,6 +213,7 @@ jobs:
         run: |
           find artifacts -type d -name '*.doccarchive' -print
           ls -al artifacts
+          find artifacts -type d -name '*.doccarchive' -print0 | xargs --null --no-run-if-empty echo
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \
             sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}-combined.doccarchive'"

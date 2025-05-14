@@ -214,7 +214,7 @@ jobs:
           find artifacts -type d -name '*.doccarchive' -print
           ls -al artifacts
           echo "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'"
-          find artifacts -type d -name '*.doccarchive' -print0 | xargs --null --no-run-if-empty sh -c "'echo \"\$@\""
+          find artifacts -type d -name '*.doccarchive' -print0 | xargs --null --no-run-if-empty sh -c "echo \"\$@\""
           mkdir -p "${OUTPUT_PATH}"
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \

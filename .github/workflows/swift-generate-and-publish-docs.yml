@@ -206,15 +206,11 @@ jobs:
         with:
           path: artifacts
       - name: Extract artifacts
-        run: find artifacts -type f -name '*.doccarchive.tar' -execdir tar -xvf '{}' --strip-components 1 \; -delete
+        run: find artifacts -type f -name '*.doccarchive.tar' -execdir tar -xvf '{}' \; -delete
       - name: Merge documentations
         env:
           REPO_NAME: ${{ inputs.repository }}
         run: |
-          find artifacts -type d -name '*.doccarchive' -print
-          find . -type d -name '*.doccarchive' -print
-          ls -al
-          ls -al artifacts
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \
             sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}-combined.doccarchive'"
@@ -250,15 +246,16 @@ jobs:
           name: ${{ inputs.repository }}-combined.doccarchive.tar
       - name: Extract artifact
         env:
-          TAR_NAME: ${{ inputs.repository }}.doccarchive.tar
-        run: tar -xvf "${TAR_NAME}" --strip-components 1
+          TAR_NAME: ${{ inputs.repository }}-combined.doccarchive.tar
+        run: tar -xvf "${TAR_NAME}"
       - name: Move contents
         env:
           SOURCE_DIR: ${{ inputs.repository }}.doccarchive
           TARGET_DIR: repository/${{ needs.basic-context.outputs.version-name }}
         run: |
+          TARGET_DIR="$(realpath "${TARGET_DIR}")"
           rm -rf "${TARGET_DIR}"
-          cp -R "${SOURCE_DIR}" "${DOCS_BASE_DIR}"
+          find . -type d -name '*.doccarchive' -exec cp -R '{}' "${TARGET_DIR}"\ ;
       - name: Create root index
         working-directory: repository
         env:

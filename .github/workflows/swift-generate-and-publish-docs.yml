@@ -209,14 +209,16 @@ jobs:
         run: find artifacts -type f -name '*.doccarchive.tar' -execdir tar -xvf '{}' \; -delete
       - name: Merge documentations
         env:
-          REPO_NAME: ${{ inputs.repository }}
+          OUTPUT_PATH: ${{ inputs.repository }}-combined.doccarchive
         run: |
           find artifacts -type d -name '*.doccarchive' -print
           ls -al artifacts
-          find artifacts -type d -name '*.doccarchive' -print0 | xargs --null --no-run-if-empty echo
+          echo "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'"
+          find artifacts -type d -name '*.doccarchive' -print0 | xargs --null --no-run-if-empty sh -c "'echo \"\$@\""
+          mkdir -p "${OUTPUT_PATH}"
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \
-            sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}-combined.doccarchive'"
+            sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'"
         # We could use `xargs -J` in POSIX - but GNU xargs doesn't have -J...
       - name: Package combined docs
         env:

@@ -164,7 +164,7 @@ jobs:
           enable-index-building: false
           transform-for-static-hosting: true
           hosting-base-path: ${{ needs.basic-context.outputs.version-path }}
-          output: ${{ matrix.target }}-docs.doccarchive
+          output: ${{ matrix.target }}.doccarchive
       - name: Package docs
         env:
           TARGET: ${{ matrix.target }}

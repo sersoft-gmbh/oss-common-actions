@@ -250,7 +250,6 @@ jobs:
         run: tar -xvf "${TAR_NAME}"
       - name: Move contents
         env:
-          SOURCE_DIR: ${{ inputs.repository }}.doccarchive
           TARGET_DIR: repository/${{ needs.basic-context.outputs.version-name }}
         run: |
           TARGET_DIR="$(realpath "${TARGET_DIR}")"

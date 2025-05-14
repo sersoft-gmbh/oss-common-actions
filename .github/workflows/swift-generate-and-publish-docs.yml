@@ -258,7 +258,7 @@ jobs:
         run: |
           TARGET_DIR="$(realpath "${TARGET_DIR}")"
           rm -rf "${TARGET_DIR}"
-          find . -type d -name '*.doccarchive' -exec cp -R '{}' "${TARGET_DIR}"\ ;
+          find . -type d -name '*.doccarchive' -exec cp -R '{}' "${TARGET_DIR}" \;
       - name: Create root index
         working-directory: repository
         env:

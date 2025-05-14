@@ -164,15 +164,15 @@ jobs:
           enable-index-building: false
           transform-for-static-hosting: true
           hosting-base-path: ${{ needs.basic-context.outputs.version-path }}
-          output: ${{ matrix.target }}.doccarchive
+          output: ${{ matrix.target }}-docs.doccarchive
       - name: Package docs
         env:
           TARGET: ${{ matrix.target }}
-        run: tar -cvf "${TARGET}.doccarchive.tar" "${TARGET}.doccarchive"
+        run: tar -cvf "${TARGET}-docs.doccarchive.tar" "${TARGET}-docs.doccarchive"
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}.doccarchive.tar
-          path: ${{ matrix.target }}.doccarchive.tar
+          name: ${{ matrix.target }}-docs.doccarchive.tar
+          path: ${{ matrix.target }}-docs.doccarchive.tar
           retention-days: 3
       # Necessary for cache action post run not to fail.
       - uses: sersoft-gmbh/oss-common-actions/containers/fix-permissions@main
@@ -213,16 +213,16 @@ jobs:
         run: |
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \
-            sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}.doccarchive'"
+            sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}-combined.doccarchive'"
         # We could use `xargs -J` in POSIX - but GNU xargs doesn't have -J...
       - name: Package combined docs
         env:
           REPO_NAME: ${{ inputs.repository }}
-        run: tar -cvf "${REPO_NAME}.doccarchive.tar" "${REPO_NAME}.doccarchive"
+        run: tar -cvf "${REPO_NAME}-combined.doccarchive.tar" "${REPO_NAME}-combined.doccarchive"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.repository }}-combined.doccarchive.tar
-          path: ${{ inputs.repository }}.doccarchive.tar
+          path: ${{ inputs.repository }}-combined.doccarchive.tar
           retention-days: 3
 
   publish-docs:
@@ -304,7 +304,6 @@ jobs:
       - merge-docs
       - publish-docs
     permissions: {}
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Cleanup Artifacts

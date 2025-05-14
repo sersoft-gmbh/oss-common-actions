@@ -211,6 +211,10 @@ jobs:
         env:
           REPO_NAME: ${{ inputs.repository }}
         run: |
+          find artifacts -type d -name '*.doccarchive' -print
+          find . -type d -name '*.doccarchive' -print
+          ls -al
+          ls -al artifacts
           find artifacts -type d -name '*.doccarchive' -print0 \
           | xargs --null --no-run-if-empty \
             sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${REPO_NAME}-combined.doccarchive'"
@@ -303,6 +307,7 @@ jobs:
       - generate-docs
       - merge-docs
       - publish-docs
+    if: {{ always() }}
     permissions: {}
     runs-on: ubuntu-latest
     steps:

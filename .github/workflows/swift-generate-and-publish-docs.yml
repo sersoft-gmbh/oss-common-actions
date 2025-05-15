@@ -278,14 +278,32 @@ jobs:
              </body>
           </html>
           EOF
-      - name: Create latest symlink
+      - name: Create latest index
         if: ${{ needs.basic-context.outputs.is-latest == 'true' }}
         working-directory: repository
         env:
-          VERSION_NAME: ${{ needs.basic-context.outputs.version-name }}
+          REDIRECT_URL: ${{ needs.basic-context.outputs.base-url }}/${{ needs.basic-context.outputs.version-base-path }}/documentation
+          REPO_NAME: ${{ inputs.repository }}
         run: |
-          rm -f 'latest'
-          ln -s "${VERSION_NAME}" 'latest'
+          if [ -d 'latest' ]; then
+            rm -rf 'latest'
+          else
+            rm -f 'latest'
+          fi
+          mkdir -p 'latest'
+          cat > 'latest/index.html' <<EOF
+          <!DOCTYPE html>
+          <html lang="en">
+             <head>
+                <title>${REPO_NAME} Documentation</title>
+                <meta charset="utf-8"/>
+                <meta http-equiv="refresh" content="0; url=${REDIRECT_URL}"/>
+             </head>
+             <body>
+                <p>Redirecting...</p>
+             </body>
+          </html>
+          EOF
       - name: Push changes
         working-directory: repository
         env:

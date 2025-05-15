@@ -282,7 +282,7 @@ jobs:
         if: ${{ needs.basic-context.outputs.is-latest == 'true' }}
         working-directory: repository
         env:
-          REDIRECT_URL: ${{ needs.basic-context.outputs.base-url }}/${{ needs.basic-context.outputs.version-base-path }}/documentation
+          REDIRECT_URL: ${{ needs.basic-context.outputs.base-url }}/${{ needs.basic-context.outputs.version-path }}/documentation
           REPO_NAME: ${{ inputs.repository }}
         run: |
           if [ -d 'latest' ]; then

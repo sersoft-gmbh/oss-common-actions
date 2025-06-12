@@ -5,22 +5,22 @@ inputs:
   delete-package-resolved-file-before-build:
     description: Whether to delete the Package.resolved file before building.
     required: false
-    default: 'false'
+    default: "false"
   use-sudo:
     description: Whether to use sudo for running the tests.
     required: false
-    default: 'false'
+    default: "false"
   skip-codecov:
     description: Whether to skip uploading the coverage report to Codecov.
     required: false
-    default: 'false'
+    default: "false"
   codecov-token:
     description: The Codecov token to use for uploading the coverage report.
     required: false
   fail-if-codecov-fails:
     description: Whether to fail the action if Codecov fails.
     required: false
-    default: 'true'
+    default: "true"
 
 runs:
   using: composite
@@ -29,6 +29,12 @@ runs:
       id: os-version
     - uses: sersoft-gmbh/swift-version-action@v3
       id: swift-version
+    - uses: ConorMacBride/install-package@v1.1.0
+      if: ${{ inputs.disable-cache-mount-caching != 'true }}
+      with:
+        brew: zstd
+        apt: zstd
+        choco: zstandard
     - uses: actions/checkout@v4
     - uses: actions/cache@v4
       with:

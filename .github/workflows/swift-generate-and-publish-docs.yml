@@ -56,7 +56,7 @@ jobs:
       build-os: ${{ steps.builder.outputs.runner-os }}
       build-container: ${{ steps.builder.outputs.container }}
       xcode-version: ${{ steps.builder.outputs.xcode-version }}
-      base-url: 'https://${{ inputs.organisation }}.github.io'
+      base-url: "https://${{ inputs.organisation }}.github.io"
       base-path: ${{ inputs.repository }}
       version-path: ${{ inputs.repository }}/${{ github.ref_name }}
     steps:
@@ -122,6 +122,12 @@ jobs:
           xcode-version: ${{ needs.basic-context.outputs.xcode-version }}
       - uses: sersoft-gmbh/swift-version-action@v3
         id: swift-version
+      - uses: ConorMacBride/install-package@v1.1.0
+        if: ${{ inputs.disable-cache-mount-caching != 'true }}
+        with:
+          brew: zstd
+          apt: zstd
+          choco: zstandard
       - name: Run before command
         if: ${{ inputs.before-run != '' }}
         env:
@@ -149,8 +155,8 @@ jobs:
             ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ inputs.xcode-destination }}-
       - uses: sersoft-gmbh/swifty-docs-action@v3
         env:
-          ENABLE_DOCC_SUPPORT: '1'
-          DOCC_JSON_PRETTYPRINT: 'YES'
+          ENABLE_DOCC_SUPPORT: "1"
+          DOCC_JSON_PRETTYPRINT: "YES"
         with:
           package-version: ${{ needs.basic-context.outputs.version-name }}
           targets: ${{ matrix.target }}

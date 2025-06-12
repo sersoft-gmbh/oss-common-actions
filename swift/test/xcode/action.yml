@@ -8,32 +8,32 @@ inputs:
   delete-package-resolved-file-before-build:
     description: Whether to delete the Package.resolved file before building.
     required: false
-    default: 'false'
+    default: "false"
   xcode-scheme:
     description: The Xcode scheme to test.
     required: true
   skip-package-validations:
     description: Whether to skip package (macro and plugin) validations.
     required: false
-    default: 'true'
+    default: "true"
   platform:
     description: The platform to use. Must be either 'macOS', 'iOS', 'iPadOS', 'tvOS', 'watchOS' or 'visionOS' (requires xcode-version 15 or greater).
     required: true
   platform-version:
     description: The platform version to use. Only used for iOS, iPadOS, tvOS, watchOS and visionOS. No checks are made whether a simulator for the given version exists.
     required: false
-    default: 'latest'
+    default: "latest"
   skip-codecov:
     description: Whether to skip uploading the coverage report to Codecov.
     required: false
-    default: 'false'
+    default: "false"
   codecov-token:
     description: The Codecov token to use for uploading the coverage report.
     required: false
   fail-if-codecov-fails:
     description: Whether to fail the action if Codecov fails.
     required: false
-    default: 'true'
+    default: "true"
 
 runs:
   using: composite
@@ -41,6 +41,12 @@ runs:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: ${{ inputs.xcode-version }}
+    - uses: ConorMacBride/install-package@v1.1.0
+      if: ${{ inputs.disable-cache-mount-caching != 'true }}
+      with:
+        brew: zstd
+        apt: zstd
+        choco: zstandard
     - uses: sersoft-gmbh/os-version-action@v3
       id: os-version
     - uses: sersoft-gmbh/swift-version-action@v3
@@ -55,10 +61,10 @@ runs:
       if: ${{ inputs.platform == 'visionOS' }}
       shell: bash
       run: |
-          sudo xcodebuild -runFirstLaunch
-          sudo xcrun simctl list # needed to boot the simulator
-          sudo xcodebuild -downloadPlatform visionOS
-          sudo xcodebuild -runFirstLaunch
+        sudo xcodebuild -runFirstLaunch
+        sudo xcrun simctl list # needed to boot the simulator
+        sudo xcodebuild -downloadPlatform visionOS
+        sudo xcodebuild -runFirstLaunch
     - uses: actions/checkout@v4
     - uses: actions/cache@v4
       with:
@@ -72,7 +78,7 @@ runs:
       run: rm -f Package.resolved
     - uses: sersoft-gmbh/xcodebuild-action@v3
       with:
-        spm-package: './'
+        spm-package: "./"
         scheme: ${{ inputs.xcode-scheme }}
         destination: ${{ steps.xcode-destination.outputs.destination }}
         action: test
@@ -84,7 +90,7 @@ runs:
         # Work around PIF issue: https://github.com/apple/swift-package-manager/issues/5767
         cloned-source-packages-path: ${{ runner.temp }}/xcodebuild-source-packages
         # Disable output formatting
-        output-formatter: ''
+        output-formatter: ""
     - uses: sersoft-gmbh/swift-coverage-action@v4
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files

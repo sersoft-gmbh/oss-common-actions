@@ -123,7 +123,7 @@ jobs:
       - uses: sersoft-gmbh/swift-version-action@v3
         id: swift-version
       - uses: ConorMacBride/install-package@v1.1.0
-        if: ${{ needs.basic-context.outputs.build-container != '' }}
+        if: ${{ needs.basic-context.outputs.build-container == '' }}
         with:
           brew: zstd
           apt: zstd

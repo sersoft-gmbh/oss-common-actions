@@ -93,7 +93,7 @@ jobs:
     outputs:
       package-dump: ${{ steps.dump-package.outputs.package-dump }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # We don't use a cache here, because SPM doesn't resolve dependencies when dumping packages.
       - name: Dump package
         id: dump-package
@@ -138,7 +138,7 @@ jobs:
         run: |
           echo '::warning::The container-before-run input is deprecated! Use before-run instead!'
           ${{ inputs.container-before-run }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/cache@v4
         if: ${{ runner.os != 'macOS' || inputs.xcode-destination == '' }}
         with:
@@ -244,7 +244,7 @@ jobs:
       group: ${{ inputs.organisation }}/${{ inputs.repository }}/${{ inputs.pages-branch }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.pages-branch }}
           path: repository

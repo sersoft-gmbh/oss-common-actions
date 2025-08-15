@@ -56,13 +56,18 @@ runs:
         platform: ${{ inputs.platform }}
         xcode-version: ${{ inputs.xcode-version }}
         platform-version: ${{ inputs.platform-version }}
-    - name: Download visionOS
-      if: ${{ inputs.platform == 'visionOS' }}
+    - name: Download Platform Support
+      if: ${{ inputs.platform != 'macOS' }}
       shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
       run: |
+        if [ "${PLATFORM}" = 'iPadOS' ]; then
+          PLATFORM='iOS'
+        fi
         sudo xcodebuild -runFirstLaunch
         sudo xcrun simctl list # needed to boot the simulator
-        sudo xcodebuild -downloadPlatform visionOS
+        sudo xcodebuild -downloadPlatform "${PLATFORM}"
         sudo xcodebuild -runFirstLaunch
     - uses: actions/checkout@v5
     - uses: actions/cache@v4

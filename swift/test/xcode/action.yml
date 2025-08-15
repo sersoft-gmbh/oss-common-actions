@@ -65,8 +65,8 @@ runs:
         if [ "${PLATFORM}" = 'iPadOS' ]; then
           PLATFORM='iOS'
         fi
+        sudo rm -rf /Library/Developer/CoreSimulator/*
         sudo xcodebuild -runFirstLaunch
-        sudo xcrun simctl runtime delete all # remove all runtimes (to prevent conflicts when choosing the platform later on)
         sudo xcrun simctl list # needed to boot the simulator
         sudo xcodebuild -downloadPlatform "${PLATFORM}"
         sudo xcodebuild -runFirstLaunch

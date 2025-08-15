@@ -139,6 +139,12 @@ runs:
             '16.3'*) INSTALL_NEEDED='false';;
             '16.4'*) INSTALL_NEEDED='false';;
           esac
+        elif [ "${PLATFORM_VERSION}" = 'latest' ]; then
+          # For whatever reason, 'latest' tries to use the beta version of visionOS 26...
+          case "${XCODE_VERSION}" in
+            '16.3'*) PLATFORM_VERSION='2.4';;
+            '16.4'*) PLATFORM_VERSION='2.5';;
+          esac
         fi
         echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}"
         echo "needs-install=${INSTALL_NEEDED}" >> "${GITHUB_OUTPUT}"

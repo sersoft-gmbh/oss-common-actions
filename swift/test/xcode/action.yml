@@ -57,7 +57,7 @@ runs:
         xcode-version: ${{ inputs.xcode-version }}
         platform-version: ${{ inputs.platform-version }}
     - name: Download Platform Support
-      if: ${{ inputs.platform != 'macOS' }}
+      if: ${{ inputs.platform != 'macOS' && steps.xcode-destination.outputs.needs-platform-install == 'true' }}
       shell: bash
       env:
         PLATFORM: ${{ inputs.platform }}
@@ -65,12 +65,7 @@ runs:
         if [ "${PLATFORM}" = 'iPadOS' ]; then
           PLATFORM='iOS'
         fi
-        # FIXME: This is a bit drastic, but it's currently the easiest way to make sure no beta platform is considered.
-        sudo rm -rf /Library/Developer/CoreSimulator/*
-        sudo xcodebuild -runFirstLaunch
-        sudo xcrun simctl list # needed to boot the simulator
-        sudo xcodebuild -downloadPlatform "${PLATFORM}"
-        sudo xcodebuild -runFirstLaunch
+        xcodebuild -downloadPlatform "${PLATFORM}"
     - uses: actions/checkout@v5
     - uses: actions/cache@v4
       with:

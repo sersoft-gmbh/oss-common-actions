@@ -36,6 +36,7 @@ runs:
           '14'*) ;;
           '15'*) ;;
           '16'*) ;;
+          '26'*) ;;
           *) echo "::error title=Unsupported Xcode Version!::Unsupported Xcode version: ${XCODE_VERSION}" && exit 1;;
         esac
         case "${PLATFORM}" in
@@ -48,6 +49,7 @@ runs:
             case "${XCODE_VERSION}" in
               '15'*) ;;
               '16'*) ;;
+              '26'*) ;;
               *) echo "::error title=Unsupported Platform!::${PLATFORM} is not supported on Xcode ${XCODE_VERSION}" && exit 1;;
             esac
           ;;
@@ -130,14 +132,24 @@ runs:
               *) exit 1;; # Handled in validation above
             esac
           ;;
+          '26'*)
+            case "${PLATFORM}" in
+              'iOS')      DEVICE_NAME='iPhone 17 Pro';;
+              'iPadOS')   DEVICE_NAME='iPad Pro 11-inch (M4)';;
+              'tvOS')     DEVICE_NAME='Apple TV 4K (3rd generation)';;
+              'watchOS')  DEVICE_NAME='Apple Watch Ultra 3 (49mm)';;
+              'visionOS') DEVICE_NAME='Apple Vision Pro';;
+              *) exit 1;; # Handled in validation above
+            esac
+          ;;
           *) exit 1;; # Handled in validation above
         esac
         if [ "${PLATFORM}" != 'visionOS' ]; then
           # Only the last three Xcode versions have their platforms installed
           # https://github.com/actions/runner-images/issues/12541
           case "${XCODE_VERSION}" in
-            '16.3'*) INSTALL_NEEDED='false';;
             '16.4'*) INSTALL_NEEDED='false';;
+            '26'*) INSTALL_NEEDED='false';;
           esac
         elif [ "${PLATFORM_VERSION}" = 'latest' ]; then
           # For whatever reason, 'latest' tries to use the beta version of visionOS 26...

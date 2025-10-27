@@ -175,7 +175,7 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
         run: tar -cvf "${TARGET}-docs.doccarchive.tar" "${TARGET}-docs.doccarchive"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.target }}-docs.doccarchive.tar
           path: ${{ matrix.target }}-docs.doccarchive.tar
@@ -226,7 +226,7 @@ jobs:
         env:
           REPO_NAME: ${{ inputs.repository }}
         run: tar -cvf "${REPO_NAME}-combined.doccarchive.tar" "${REPO_NAME}-combined.doccarchive"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ inputs.repository }}-combined.doccarchive.tar
           path: ${{ inputs.repository }}-combined.doccarchive.tar

@@ -112,7 +112,7 @@ jobs:
           platform-version: ${{ inputs.xcode-platform-version }}
 
       - name: Build
-        uses: sersoft-gmbh/xcodebuild-action@v3
+        uses: sersoft-gmbh/xcodebuild-action@v4
         if: ${{ runner.os == 'macOS' && inputs.use-xcodebuild }}
         with:
           spm-package: './'

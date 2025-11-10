@@ -25,7 +25,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: sersoft-gmbh/os-version-action@v3
+    - uses: sersoft-gmbh/os-version-action@v4
       id: os-version
     - uses: sersoft-gmbh/swift-version-action@v3
       id: swift-version

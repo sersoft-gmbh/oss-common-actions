@@ -153,7 +153,7 @@ jobs:
           key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ inputs.xcode-destination }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-${{ steps.os-version.outputs.version }}-xcode-${{ steps.swift-version.outputs.version }}-${{ inputs.xcode-destination }}-
-      - uses: sersoft-gmbh/swifty-docs-action@v3
+      - uses: sersoft-gmbh/swifty-docs-action@v4
         env:
           ENABLE_DOCC_SUPPORT: "1"
           DOCC_JSON_PRETTYPRINT: "YES"

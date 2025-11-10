@@ -27,7 +27,7 @@ runs:
   steps:
     - uses: sersoft-gmbh/os-version-action@v4
       id: os-version
-    - uses: sersoft-gmbh/swift-version-action@v3
+    - uses: sersoft-gmbh/swift-version-action@v4
       id: swift-version
     # - uses: ConorMacBride/install-package@v1.1.0
     #   with:

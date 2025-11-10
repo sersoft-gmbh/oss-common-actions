@@ -48,7 +48,7 @@ runs:
         choco: zstandard
     - uses: sersoft-gmbh/os-version-action@v4
       id: os-version
-    - uses: sersoft-gmbh/swift-version-action@v3
+    - uses: sersoft-gmbh/swift-version-action@v4
       id: swift-version
     - uses: sersoft-gmbh/oss-common-actions/swift/xcode-destination-specifier@main
       id: xcode-destination

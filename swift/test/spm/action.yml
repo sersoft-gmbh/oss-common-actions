@@ -70,7 +70,7 @@ runs:
         if [ -f 'Package.resolved' ]; then
           sudo chown "$(whoami)" 'Package.resolved'
         fi
-    - uses: sersoft-gmbh/swift-coverage-action@v4
+    - uses: sersoft-gmbh/swift-coverage-action@v5
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files
     - name: Workaround for codecov/codecov-action#1731

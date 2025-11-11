@@ -93,7 +93,7 @@ runs:
         cloned-source-packages-path: ${{ runner.temp }}/xcodebuild-source-packages
         # Disable output formatting
         output-formatter: ""
-    - uses: sersoft-gmbh/swift-coverage-action@v4
+    - uses: sersoft-gmbh/swift-coverage-action@v5
       if: ${{ inputs.skip-codecov != 'true' }}
       id: coverage-files
       with:

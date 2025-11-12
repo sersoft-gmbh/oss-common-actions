@@ -80,7 +80,7 @@ runs:
               ;;
               '6.2'*)
                 MACOS_VERSION='26'
-                XCODE_VERSION='26.0'
+                XCODE_VERSION='26.1'
                 # XCODE_VERSION_SUPPORTED='false'
               ;;
               *)

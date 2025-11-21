@@ -72,7 +72,7 @@ jobs:
           xcode-version: ${{ needs.determine-versions.outputs.xcode-version }}
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

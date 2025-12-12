@@ -139,14 +139,14 @@ jobs:
           echo '::warning::The container-before-run input is deprecated! Use before-run instead!'
           ${{ inputs.container-before-run }}
       - uses: actions/checkout@v6
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         if: ${{ runner.os != 'macOS' || inputs.xcode-destination == '' }}
         with:
           path: .build
           key: ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-${{ steps.os-version.outputs.version }}-spm-${{ steps.swift-version.outputs.version }}-
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         if: ${{ runner.os == 'macOS' && inputs.xcode-destination != '' }}
         with:
           path: .derived-data

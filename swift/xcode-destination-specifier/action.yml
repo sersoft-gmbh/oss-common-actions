@@ -158,7 +158,8 @@ runs:
           # Only the last three Xcode versions have their platforms installed
           # https://github.com/actions/runner-images/issues/12541
           case "${XCODE_VERSION}" in
-            '26'*) INSTALL_NEEDED='false';;
+            '26.0'*) INSTALL_NEEDED='false';;
+            '26.1'*) INSTALL_NEEDED='false';;
           esac
         elif [ "${PLATFORM_VERSION}" = 'latest' ]; then
           # For whatever reason, 'latest' gets confused between visionOS 2.5 and 26.

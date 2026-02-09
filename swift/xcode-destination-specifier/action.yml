@@ -141,6 +141,7 @@ runs:
               'visionOS') DEVICE_NAME='Apple Vision Pro';;
               *) exit 1;; # Handled in validation above
             esac
+          ;;
           '26'*)
             case "${PLATFORM}" in
               'iOS')      DEVICE_NAME='iPhone 17 Pro';;

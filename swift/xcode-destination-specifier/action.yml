@@ -132,10 +132,19 @@ runs:
               *) exit 1;; # Handled in validation above
             esac
           ;;
-          '26'*)
+          '26.0'*)
             case "${PLATFORM}" in
               'iOS')      DEVICE_NAME='iPhone 17 Pro';;
               'iPadOS')   DEVICE_NAME='iPad Pro 11-inch (M4)';;
+              'tvOS')     DEVICE_NAME='Apple TV 4K (3rd generation)';;
+              'watchOS')  DEVICE_NAME='Apple Watch Ultra 3 (49mm)';;
+              'visionOS') DEVICE_NAME='Apple Vision Pro';;
+              *) exit 1;; # Handled in validation above
+            esac
+          '26'*)
+            case "${PLATFORM}" in
+              'iOS')      DEVICE_NAME='iPhone 17 Pro';;
+              'iPadOS')   DEVICE_NAME='iPad Pro 11-inch (M5)';;
               'tvOS')     DEVICE_NAME='Apple TV 4K (3rd generation)';;
               'watchOS')  DEVICE_NAME='Apple Watch Ultra 3 (49mm)';;
               'visionOS') DEVICE_NAME='Apple Vision Pro';;
@@ -148,7 +157,6 @@ runs:
           # Only the last three Xcode versions have their platforms installed
           # https://github.com/actions/runner-images/issues/12541
           case "${XCODE_VERSION}" in
-            '16.4'*) INSTALL_NEEDED='false';;
             '26'*) INSTALL_NEEDED='false';;
           esac
         elif [ "${PLATFORM_VERSION}" = 'latest' ]; then
@@ -156,7 +164,9 @@ runs:
           case "${XCODE_VERSION}" in
             '16.3'*) PLATFORM_VERSION='2.4';;
             '16.4'*) PLATFORM_VERSION='2.5';;
-            '26'*) PLATFORM_VERSION='26.0';;
+            '26.0'*) PLATFORM_VERSION='26.0';;
+            '26.1'*) PLATFORM_VERSION='26.1';;
+            '26'*) PLATFORM_VERSION='26.2';;
           esac
         fi
         echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}"

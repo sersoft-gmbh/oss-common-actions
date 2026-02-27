@@ -208,7 +208,7 @@ jobs:
         if: ${{ runner.os == 'macOS' }}
         with:
           xcode-version: ${{ needs.basic-context.outputs.xcode-version }}
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: artifacts
       - name: Extract artifacts
@@ -248,7 +248,7 @@ jobs:
         with:
           ref: ${{ inputs.pages-branch }}
           path: repository
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.repository }}-combined.doccarchive.tar
       - name: Extract artifact

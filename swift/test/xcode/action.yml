@@ -23,6 +23,10 @@ inputs:
     description: The platform version to use. Only used for iOS, iPadOS, tvOS, watchOS and visionOS. No checks are made whether a simulator for the given version exists.
     required: false
     default: "latest"
+  no-parallel:
+    description: Whether to run the tests serially.
+    required: false
+    default: "false"
   skip-codecov:
     description: Whether to skip uploading the coverage report to Codecov.
     required: false
@@ -84,7 +88,7 @@ runs:
         scheme: ${{ inputs.xcode-scheme }}
         destination: ${{ steps.xcode-destination.outputs.destination }}
         action: test
-        parallel-testing-enabled: ${{ inputs.platform != 'watchOS' }}
+        parallel-testing-enabled: ${{ inputs.platform != 'watchOS' && inputs.no-parallel != 'true' }}
         enable-code-coverage: true
         skip-package-plugin-validation: ${{ fromJSON(inputs.skip-package-validations) }}
         skip-macro-validation: ${{ fromJSON(inputs.skip-package-validations) }}

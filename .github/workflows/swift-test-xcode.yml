@@ -34,6 +34,11 @@ on:
         required: false
         type: boolean
         default: false
+      no-parallel:
+        description: Whether to run the tests serially.
+        required: false
+        type: boolean
+        default: false
       skip-codecov:
         description: Whether to skip uploading to codecov.
         required: false
@@ -90,6 +95,7 @@ jobs:
           xcode-scheme: ${{ inputs.xcode-scheme }}
           platform: ${{ inputs.platform }}
           platform-version: ${{ inputs.platform-version }}
+          no-parallel: ${{ inputs.no-parallel }}
           skip-codecov: ${{ inputs.skip-codecov }}
           codecov-token: ${{ secrets.CODECOV_TOKEN }}
           fail-if-codecov-fails: ${{ inputs.fail-if-codecov-fails }}

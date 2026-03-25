@@ -49,17 +49,22 @@ runs:
       shell: bash
       env:
         USE_SUDO: ${{ inputs.use-sudo || 'false' }}
+        NO_PARALLEL: ${{ inputs.no-parallel || 'false' }}
         RUNNER_DEBUG: ${{ runner.debug }}
       run: |
         SUDO_PREFIX=''
         if [ "${USE_SUDO}" = 'true' ]; then
           SUDO_PREFIX='sudo'
         fi
+        PARALLEL_PREFIX=''
+        if [ "${NO_PARALLEL}" = 'true' ]; then
+          PARALLEL_PREFIX='no-'
+        fi
         VERBOSE_ARG=''
         if [ "${ACTIONS_STEP_DEBUG}" = 'true' ] || [ "${RUNNER_DEBUG}" = '1' ]; then
           VERBOSE_ARG='-v'
         fi
-        ${SUDO_PREFIX} swift test ${VERBOSE_ARG} --parallel --enable-code-coverage
+        ${SUDO_PREFIX} swift test ${VERBOSE_ARG} --${PARALLEL_PREFIX}parallel --enable-code-coverage
     - name: Fix build artifact owner
       if: ${{ inputs.use-sudo == 'true' }}
       shell: bash

@@ -30,6 +30,10 @@ on:
         required: false
         type: boolean
         default: false
+      no-parallel:
+        description: Whether to run the tests serially.
+        required: false
+        default: "false"
       skip-codecov:
         description: Whether to skip uploading to codecov.
         required: false
@@ -101,6 +105,7 @@ jobs:
         with:
           delete-package-resolved-file-before-build: ${{ needs.determine-versions.outputs.remove-package-resolved-file-before-build }}
           use-sudo: ${{ inputs.use-sudo }}
+          no-parallel: ${{ inputs.no-parallel }}
           skip-codecov: ${{ inputs.skip-codecov }}
           codecov-token: ${{ secrets.CODECOV_TOKEN }}
           fail-if-codecov-fails: ${{ inputs.fail-if-codecov-fails }}

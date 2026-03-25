@@ -65,23 +65,23 @@ runs:
               '5.10'*)
                 MACOS_VERSION='14'
                 XCODE_VERSION='15.3'
-                # See https://github.com/actions/runner-images/issues/9459
-                # XCODE_VERSION_SUPPORTED='false'
               ;;
               '6.0'*)
                 MACOS_VERSION='15'
                 XCODE_VERSION='16.0'
-                # XCODE_VERSION_SUPPORTED='false'
               ;;
               '6.1'*)
                 MACOS_VERSION='15'
                 XCODE_VERSION='16.4'
-                # XCODE_VERSION_SUPPORTED='false'
               ;;
               '6.2'*)
                 MACOS_VERSION='26'
                 XCODE_VERSION='26.2'
-                # XCODE_VERSION_SUPPORTED='false'
+              '6.3'*)
+                MACOS_VERSION='26'
+                XCODE_VERSION='26.4'
+                # See https://github.com/actions/runner-images/issues/13815
+                XCODE_VERSION_SUPPORTED='false'
               ;;
               *)
                 echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1

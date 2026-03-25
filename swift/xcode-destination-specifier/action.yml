@@ -158,8 +158,8 @@ runs:
           # Only the last three Xcode versions have their platforms installed
           # https://github.com/actions/runner-images/issues/12541
           case "${XCODE_VERSION}" in
-            '26.0'*) INSTALL_NEEDED='false';;
-            '26.1'*) INSTALL_NEEDED='false';;
+            '26.2'*) INSTALL_NEEDED='false';;
+            '26.3'*) INSTALL_NEEDED='false';;
           esac
         elif [ "${PLATFORM_VERSION}" = 'latest' ]; then
           # For whatever reason, 'latest' gets confused between visionOS 2.5 and 26.
@@ -168,7 +168,9 @@ runs:
             '16.4'*) PLATFORM_VERSION='2.5';;
             '26.0'*) PLATFORM_VERSION='26.0';;
             '26.1'*) PLATFORM_VERSION='26.1';;
-            '26'*) PLATFORM_VERSION='26.2';;
+            '26.2'*) PLATFORM_VERSION='26.2';;
+            '26.3'*) PLATFORM_VERSION='26.3';;
+            '26'*) PLATFORM_VERSION='26.4';;
           esac
         fi
         echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}"

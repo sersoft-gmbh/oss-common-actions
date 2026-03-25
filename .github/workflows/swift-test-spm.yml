@@ -33,7 +33,8 @@ on:
       no-parallel:
         description: Whether to run the tests serially.
         required: false
-        default: "false"
+        type: boolean
+        default: false
       skip-codecov:
         description: Whether to skip uploading to codecov.
         required: false

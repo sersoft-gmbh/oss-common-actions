@@ -10,6 +10,10 @@ inputs:
     description: Whether to use sudo for running the tests.
     required: false
     default: "false"
+  no-parallel:
+    description: Whether to run the tests serially.
+    required: false
+    default: "false"
   skip-codecov:
     description: Whether to skip uploading the coverage report to Codecov.
     required: false

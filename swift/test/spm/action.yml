@@ -106,7 +106,7 @@ runs:
             exit 1
           fi
         fi
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@v6
       if: ${{ inputs.skip-codecov != 'true' }}
       with:
         token: ${{ inputs.codecov-token }}

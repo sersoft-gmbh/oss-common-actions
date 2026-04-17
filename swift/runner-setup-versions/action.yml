@@ -82,7 +82,7 @@ runs:
                 MACOS_VERSION='26'
                 XCODE_VERSION='26.4'
                 # See https://github.com/actions/runner-images/issues/13815
-                XCODE_VERSION_SUPPORTED='false'
+                # XCODE_VERSION_SUPPORTED='false'
               ;;
               *)
                 echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1

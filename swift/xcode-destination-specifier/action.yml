@@ -170,7 +170,6 @@ runs:
             '26.1'*) PLATFORM_VERSION='26.1';;
             '26.2'*) PLATFORM_VERSION='26.2';;
             '26.3'*) PLATFORM_VERSION='26.2';; # there was no visionOS 26.3...
-            '26'*) PLATFORM_VERSION='26.4';;
           esac
         fi
         echo "destination=platform=${SIMULATOR_OS} Simulator,OS=${PLATFORM_VERSION},name=${DEVICE_NAME}" >> "${GITHUB_OUTPUT}"

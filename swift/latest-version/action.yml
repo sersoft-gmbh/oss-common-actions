@@ -6,7 +6,7 @@ inputs:
     description: The maximum supported Swift version.
     required: true
   offset:
-    description: The offset (backwards) from the latest Swift version. E.g. 1 will return the second latest version. The minimum resulting Swift version is 5.5.
+    description: The offset (backwards) from the latest Swift version. E.g. 1 will return the second to latest version. The minimum resulting Swift version is 5.9.
     required: false
     default: "0"
 outputs:
@@ -31,6 +31,20 @@ runs:
         SWIFT_VERSION=''
         HAS_BREAKING_RESOLVED_FILE_CHANGES='false'
         case "${BASE_VERSION}" in
+        '6.4')
+          case "${OFFSET}" in
+            '1') SWIFT_VERSION='6.3';;
+            '2') SWIFT_VERSION='6.2';;
+            '3') SWIFT_VERSION='6.1';;
+            '4') SWIFT_VERSION='6.0';;
+            '5') SWIFT_VERSION='5.10';;
+            '6') SWIFT_VERSION='5.9';;
+              *) ;;
+          esac
+          if [ "${OFFSET}" -gt '5' ]; then
+            HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
+          fi
+        ;;
         '6.3')
           case "${OFFSET}" in
             '1') SWIFT_VERSION='6.2';;
@@ -38,10 +52,6 @@ runs:
             '3') SWIFT_VERSION='6.0';;
             '4') SWIFT_VERSION='5.10';;
             '5') SWIFT_VERSION='5.9';;
-            '6') SWIFT_VERSION='5.8';;
-            '7') SWIFT_VERSION='5.7';;
-            '8') SWIFT_VERSION='5.6';;
-            '9') SWIFT_VERSION='5.5';;
               *) ;;
           esac
           if [ "${OFFSET}" -gt '4' ]; then
@@ -54,10 +64,6 @@ runs:
             '2') SWIFT_VERSION='6.0';;
             '3') SWIFT_VERSION='5.10';;
             '4') SWIFT_VERSION='5.9';;
-            '5') SWIFT_VERSION='5.8';;
-            '6') SWIFT_VERSION='5.7';;
-            '7') SWIFT_VERSION='5.6';;
-            '8') SWIFT_VERSION='5.5';;
               *) ;;
           esac
           if [ "${OFFSET}" -gt '3' ]; then
@@ -69,10 +75,6 @@ runs:
             '1') SWIFT_VERSION='6.0';;
             '2') SWIFT_VERSION='5.10';;
             '3') SWIFT_VERSION='5.9';;
-            '4') SWIFT_VERSION='5.8';;
-            '5') SWIFT_VERSION='5.7';;
-            '6') SWIFT_VERSION='5.6';;
-            '7') SWIFT_VERSION='5.5';;
               *) ;;
           esac
           if [ "${OFFSET}" -gt '2' ]; then
@@ -83,10 +85,6 @@ runs:
           case "${OFFSET}" in
             '1') SWIFT_VERSION='5.10';;
             '2') SWIFT_VERSION='5.9';;
-            '3') SWIFT_VERSION='5.8';;
-            '4') SWIFT_VERSION='5.7';;
-            '5') SWIFT_VERSION='5.6';;
-            '6') SWIFT_VERSION='5.5';;
               *) ;;
           esac
           if [ "${OFFSET}" -gt '1' ]; then
@@ -96,50 +94,6 @@ runs:
         '5.10')
           case "${OFFSET}" in
             '1') SWIFT_VERSION='5.9';;
-            '2') SWIFT_VERSION='5.8';;
-            '3') SWIFT_VERSION='5.7';;
-            '4') SWIFT_VERSION='5.6';;
-            '5') SWIFT_VERSION='5.5';;
-              *) ;;
-          esac
-          HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
-        ;;
-        '5.9')
-          case "${OFFSET}" in
-            '1') SWIFT_VERSION='5.8';;
-            '2') SWIFT_VERSION='5.7';;
-            '3') SWIFT_VERSION='5.6';;
-            '4')
-              SWIFT_VERSION='5.5'
-              HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
-              ;;
-              *) ;;
-          esac
-        ;;
-        '5.8')
-          case "${OFFSET}" in
-            '1') SWIFT_VERSION='5.7';;
-            '2') SWIFT_VERSION='5.6';;
-            '3')
-              SWIFT_VERSION='5.5'
-              HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
-              ;;
-              *) ;;
-          esac
-        ;;
-        '5.7')
-          case "${OFFSET}" in
-            '1') SWIFT_VERSION='5.6';;
-            '2')
-              SWIFT_VERSION='5.5'
-              HAS_BREAKING_RESOLVED_FILE_CHANGES='true'
-              ;;
-              *) ;;
-          esac
-        ;;
-        '5.6')
-          case "${OFFSET}" in
-            '1') SWIFT_VERSION='5.5';;
               *) ;;
           esac
           HAS_BREAKING_RESOLVED_FILE_CHANGES='true'

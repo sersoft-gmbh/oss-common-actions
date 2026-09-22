@@ -38,49 +38,37 @@ runs:
             echo "container=swift:${SWIFT_VERSION}" >> "${GITHUB_OUTPUT}"
           ;;
           'macOS')
-            MACOS_VERSION=''
+            RUNNER=''
             XCODE_VERSION=''
             XCODE_VERSION_SUPPORTED='true'
             case "${SWIFT_VERSION}" in
-              '5.5'*)
-                MACOS_VERSION='12'
-                XCODE_VERSION='13.2.1'
-              ;;
-              '5.6'*)
-                MACOS_VERSION='12'
-                XCODE_VERSION='13.4.1'
-              ;;
-              '5.7'*)
-                MACOS_VERSION='13'
-                XCODE_VERSION='14.2'
-              ;;
-              '5.8'*)
-                MACOS_VERSION='13'
-                XCODE_VERSION='14.3.1'
-              ;;
               '5.9'*)
-                MACOS_VERSION='14'
+                RUNNER='macos-14'
                 XCODE_VERSION='15.2'
               ;;
               '5.10'*)
-                MACOS_VERSION='14'
+                RUNNER='macos-14'
                 XCODE_VERSION='15.3'
               ;;
               '6.0'*)
-                MACOS_VERSION='15'
+                RUNNER='macos-15'
                 XCODE_VERSION='16.0'
               ;;
               '6.1'*)
-                MACOS_VERSION='15'
+                RUNNER='macos-15'
                 XCODE_VERSION='16.4'
               ;;
               '6.2'*)
-                MACOS_VERSION='26'
+                RUNNER='macos-26'
                 XCODE_VERSION='26.3'
               ;;
               '6.3'*)
-                MACOS_VERSION='26'
+                RUNNER='macos-26'
                 XCODE_VERSION='26.4'
+              ;;
+              '6.4'*)
+                RUNNER='xcode-27'
+                XCODE_VERSION='27.0'
                 # See https://github.com/actions/runner-images/issues/13815
                 # XCODE_VERSION_SUPPORTED='false'
               ;;
@@ -88,7 +76,7 @@ runs:
                 echo "::error title=Unsupported Swift Version!::Unsupported swift version: ${SWIFT_VERSION}" && exit 1
               ;;
             esac
-            echo "runner-os=macos-${MACOS_VERSION}" >> "${GITHUB_OUTPUT}"
+            echo "runner-os=${RUNNER}" >> "${GITHUB_OUTPUT}"
             echo "xcode-version=${XCODE_VERSION}" >> "${GITHUB_OUTPUT}"
             echo "xcode-version-supported=${XCODE_VERSION_SUPPORTED}" >> "${GITHUB_OUTPUT}"
           ;;

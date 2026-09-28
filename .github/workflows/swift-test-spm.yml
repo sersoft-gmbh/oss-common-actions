@@ -30,6 +30,11 @@ on:
         required: false
         type: boolean
         default: false
+      no-coverage:
+        description: Whether to skip generating the coverage report.
+        required: false
+        type: boolean
+        default: false
       no-parallel:
         description: Whether to run the tests serially.
         required: false
@@ -106,6 +111,7 @@ jobs:
         with:
           delete-package-resolved-file-before-build: ${{ needs.determine-versions.outputs.remove-package-resolved-file-before-build }}
           use-sudo: ${{ inputs.use-sudo }}
+          no-coverage: ${{ inputs.no-coverage }}
           no-parallel: ${{ inputs.no-parallel }}
           skip-codecov: ${{ inputs.skip-codecov }}
           codecov-token: ${{ secrets.CODECOV_TOKEN }}

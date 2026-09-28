@@ -58,7 +58,7 @@ runs:
       env:
         USE_SUDO: ${{ inputs.use-sudo || 'false' }}
         NO_PARALLEL: ${{ inputs.no-parallel || 'false' }}
-        NO_COVERAGE: ${{ inputs.no-coverage || 'false' }}`
+        NO_COVERAGE: ${{ inputs.no-coverage || 'false' }}
         RUNNER_DEBUG: ${{ runner.debug }}
       run: |
         SUDO_PREFIX=''

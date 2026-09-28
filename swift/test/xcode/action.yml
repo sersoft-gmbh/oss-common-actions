@@ -27,6 +27,10 @@ inputs:
     description: Whether to run the tests serially.
     required: false
     default: "false"
+  no-coverage:
+    description: Whether to skip generating the coverage report.
+    required: false
+    default: "false"
   skip-codecov:
     description: Whether to skip uploading the coverage report to Codecov.
     required: false
@@ -89,7 +93,7 @@ runs:
         destination: ${{ steps.xcode-destination.outputs.destination }}
         action: test
         parallel-testing-enabled: ${{ inputs.platform != 'watchOS' && inputs.no-parallel != 'true' }}
-        enable-code-coverage: true
+        enable-code-coverage: ${{ inputs.no-coverage != 'true' }}
         skip-package-plugin-validation: ${{ fromJSON(inputs.skip-package-validations) }}
         skip-macro-validation: ${{ fromJSON(inputs.skip-package-validations) }}
         derived-data-path: .derived-data
@@ -98,7 +102,7 @@ runs:
         # Disable output formatting
         output-formatter: ""
     - uses: sersoft-gmbh/swift-coverage-action@v5
-      if: ${{ inputs.skip-codecov != 'true' }}
+      if: ${{ inputs.no-coverage != 'true' && inputs.skip-codecov != 'true' }}
       id: coverage-files
       with:
         search-paths: |
@@ -106,7 +110,7 @@ runs:
           ./.derived-data
           $HOME/Library/Developer/Xcode/DerivedData
     - uses: codecov/codecov-action@v7
-      if: ${{ inputs.skip-codecov != 'true' }}
+      if: ${{ inputs.no-coverage != 'true' && inputs.skip-codecov != 'true' }}
       with:
         token: ${{ inputs.codecov-token }}
         files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}

@@ -221,7 +221,7 @@ jobs:
           # The exec mkdir is currently needed when merging a single archive. Otherwise `docc merge` fails: https://github.com/swiftlang/swift-docc/pull/1218
           find artifacts -type d -name '*.doccarchive' -exec mkdir -p '{}/data/tutorials' '{}/data/documentation' \; -print0 \
             | xargs --null --no-run-if-empty \
-              sh -c "'$(which docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'" sh
+              sh -c "'$(command -v docc || xcrun --find docc)' merge \"\$@\" --output-path '${OUTPUT_PATH}'" sh
       - name: Package combined docs
         env:
           REPO_NAME: ${{ inputs.repository }}

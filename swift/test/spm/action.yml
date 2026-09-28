@@ -14,6 +14,10 @@ inputs:
     description: Whether to run the tests serially.
     required: false
     default: "false"
+  no-coverage:
+    description: Whether to skip generating the coverage report.
+    required: false
+    default: "false"
   skip-codecov:
     description: Whether to skip uploading the coverage report to Codecov.
     required: false
@@ -54,6 +58,7 @@ runs:
       env:
         USE_SUDO: ${{ inputs.use-sudo || 'false' }}
         NO_PARALLEL: ${{ inputs.no-parallel || 'false' }}
+        NO_COVERAGE: ${{ inputs.no-coverage || 'false' }}`
         RUNNER_DEBUG: ${{ runner.debug }}
       run: |
         SUDO_PREFIX=''
@@ -64,11 +69,15 @@ runs:
         if [ "${NO_PARALLEL}" = 'true' ]; then
           PARALLEL_PREFIX='no-'
         fi
+        COVERAGE_ARG='--enable-code-coverage'
+        if [ "${NO_COVERAGE}" = 'true' ]; then
+          COVERAGE_ARG='--disable-code-coverage'
+        fi
         VERBOSE_ARG=''
         if [ "${ACTIONS_STEP_DEBUG}" = 'true' ] || [ "${RUNNER_DEBUG}" = '1' ]; then
           VERBOSE_ARG='-v'
         fi
-        ${SUDO_PREFIX} swift test ${VERBOSE_ARG} --${PARALLEL_PREFIX}parallel --enable-code-coverage
+        ${SUDO_PREFIX} swift test ${VERBOSE_ARG} --${PARALLEL_PREFIX}parallel ${COVERAGE_ARG}
     - name: Fix build artifact owner
       if: ${{ inputs.use-sudo == 'true' }}
       shell: bash
@@ -80,25 +89,25 @@ runs:
           sudo chown "$(whoami)" 'Package.resolved'
         fi
     - uses: sersoft-gmbh/swift-coverage-action@v5
-      if: ${{ inputs.skip-codecov != 'true' }}
+      if: ${{ inputs.no-coverage != 'true' && inputs.skip-codecov != 'true' }}
       id: coverage-files
     - name: Workaround for codecov/codecov-action#1731
-      if: ${{ inputs.skip-codecov != 'true' && runner.os == 'Linux' }}
+      if: ${{ inputs.no-coverage != 'true' && inputs.skip-codecov != 'true' && runner.os == 'Linux' }}
       shell: bash
-      # We might be running in a container which does not have these tools installed
+      # We might be running in a container that does not have these tools installed
       run: |
         PACKAGES=()
-        if [ -z "$(which curl)" ]; then
+        if [ -z "$(command -v curl)" ]; then
           PACKAGES+=('curl')
         fi
-        if [ -z "$(which jq)" ]; then
+        if [ -z "$(command -v jq)" ]; then
           PACKAGES+=('jq')
         fi
         if [ "${#PACKAGES}" -gt 0 ]; then
-          if [ -n "$(which apt-get)" ]; then
+          if [ -n "$(command -v apt-get)" ]; then
             apt-get update --quiet
             apt-get install --assume-yes --no-install-recommends "${PACKAGES[@]}"
-          elif [ -n "$(which brew)" ]; then
+          elif [ -n "$(command -v brew)" ]; then
             brew update
             brew install "${PACKAGES[@]}"
           else
@@ -107,7 +116,7 @@ runs:
           fi
         fi
     - uses: codecov/codecov-action@v7
-      if: ${{ inputs.skip-codecov != 'true' }}
+      if: ${{ inputs.no-coverage != 'true' && inputs.skip-codecov != 'true' }}
       with:
         token: ${{ inputs.codecov-token }}
         files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
